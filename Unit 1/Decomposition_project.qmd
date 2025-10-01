@@ -1,13 +1,18 @@
 ---
 title: "Decomposition Project"
 author: "Tristan Farrow"
+date: today
 format:
-  html: 
-    theme: lux
-    toc: true
-    code_fold: true
-    code_tools: true
+  html:
+    theme: sandstone
+    toc: false
+    code-fold: true
+    code-tools: true
     code-line-numbers: true
+    smooth-scroll: true
+    link-external-newwindow: true
+    highlight-style: monokai
+
 ---
 
 # Decomposition Project
@@ -15,6 +20,11 @@ format:
 ## What is a decomposition model?
 
 ## Data
+
+```{r}
+
+```
+
 
 ## Additive Decomposition Model
 
