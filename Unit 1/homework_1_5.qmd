@@ -1,0 +1,118 @@
+---
+title: "Time Series Homework: Chapter 1 Lesson 5"
+subtitle: "Tristan Farrow"
+format: 
+  html:
+    embed-resources: true
+    toc: true
+---
+
+```{r, echo=FALSE, message=FALSE}
+
+# Loading R packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, 
+               tsibble, fable,
+               feasts, tsibbledata,
+               fable.prophet,
+               patchwork,
+               lubridate, 
+               rio,
+               ggplot2
+               )
+```
+
+## Data
+
+```{r}
+vessels <- rio::import("https://byuistats.github.io/timeseries/data/Vessels_Trade_US.csv")
+```
+
+::: {.callout-note title="Revisions" icon="false"}
+<!-- Delete this and put your homework revisions here. -->
+:::
+
+## Questions
+
+### Question 1: Context and Measurement (10 points)
+
+The first part of any time series analysis is context. You cannot properly analyze data without knowing what the data is measuring. Without context, the most simple features of data can be obscure and inscrutable. This homework assignment will center around the series below.
+
+Please research the time series. In the spaces below, give the data collection process, unit of analysis, and meaning of each observation for the series.
+
+#### a) **Vessels Cleared in Foreign Trade for United States**
+
+<https://fred.stlouisfed.org/series/M03022USM583NNBR>
+
+::: {.callout-note title="Answer" icon="false"}
+<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+:::
+
+### Question 2: Seasonally Adjusted Series - Calculation and Plot (10 points)
+
+#### a) Decompose the Vessels Cleared in Foreign Trade series using the mul tiplicative decomposition model. Show the first 10 rows of results from the decomposition as shown in the Time Series Notebook.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+# Please provide your code here
+
+```
+:::
+
+#### b) Illustrate the original, trend, and the seasonally adjusted series in the same plot. Use the appropriate axis labels, units, and captions.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+# Please provide your code here
+
+```
+:::
+
+### Question 3: Seasonally Adjusted Series - Analysis (30 points)
+
+#### a) Plot the random component of the multiplicative decomposition from Q2a.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+# Please provide your code here
+
+```
+:::
+
+#### b) Use the additive decomposition method to decompose the Vessels Cleared in Foreign Trade series. Plot the random component.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+# Please provide your code here
+
+```
+:::
+
+#### c) Please describe the differences between the random component series and use it as part of your justification for why we use the multiplicative decomposition model instead of the additive model to seasonally adjust the series.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+# Please provide your code here
+
+```
+
+<!-- Delete this and put your answer here. -->
+:::
+
+## Rubric
+
+|  |  |  |
+|----|----|----|
+| **Criteria** | **Mastery (10)** | **Incomplete (0)** |
+| **Question 1: Context and Measurement** | The student provides a clear and detailed explanation of the data collection process, unit of analysis, and meaning of each observation for the series | The student provides a basic explanation of the data context, but some details are missing or unclear. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 2a: Multiplicative Decomposition** | Correctly applies the multiplicative decomposition model. Displays the first ten rows of decomposition results (trend, seasonal, and random components) in a clear, organized format with appropriate labeling. | Incorrectly applies the decomposition model, produces inaccurate results, or fails to present the first ten rows correctly, or the presentation needs to be clearer and more organized. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 2b: Plot** | Accurately illustrates all three series in a single, clear plot where each series is distinguishable. Clearly labels the axes with appropriate units and includes informative captions. All elements are well-presented and properly formatted. | Attempts to create a plot, but with significant inaccuracies or lack of clarity. The plot may not effectively communicate the results due to labeling or presentation issues. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3a: Multiplicative Random Component Plot** | Plots the random component of the multiplicative decomposition with clear axis labels, appropriate units, and proper formatting for readability. | Lacks proper labeling (e.g., missing axis labels, incorrect units), or presents a poorly formatted and unclear plot. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3b: Additive Random Component Plot** | Correctly applies the additive decomposition method to decompose the series and accurately plots the random component with clear axis labels, units, and proper formatting. | Fails to correctly apply the decomposition method, inaccurately plots the random component, or provides a plot that lacks proper labeling, units, or formatting. |
+|  | **Mastery (20)** | **Incomplete (0)** |
+| **Question 3c: Random Component Analysis** | Clearly describes the differences between the random components derived from the multiplicative and additive decomposition models, and provides a logical and well-reasoned justification for using the multiplicative model based on these differences. | The description of the differences between the random components or provides an unclear, unsupported, or incorrect justification for using the multiplicative model. |
+| **Total Points** | **50** |  |

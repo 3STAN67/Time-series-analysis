@@ -12,7 +12,6 @@ format:
     smooth-scroll: true
     link-external-newwindow: true
     highlight-style: monokai
-
 ---
 
 # Decomposition Project
@@ -25,7 +24,6 @@ format:
 
 ```
 
-
 ## Additive Decomposition Model
 
 ### Trend Component
@@ -34,17 +32,14 @@ format:
 
 ```
 
-
 ### Seasonal Component
 
 ```{r}
 
 ```
 
-
 ### Random Component
 
 ```{r}
 
 ```
-
