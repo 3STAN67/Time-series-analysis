@@ -1,0 +1,40 @@
+---
+title: "Decomposition Project"
+author: "Tristan Farrow"
+format:
+  html: 
+    theme: lux
+    toc: true
+    code_fold: true
+    code_tools: true
+    code-line-numbers: true
+---
+
+# Decomposition Project
+
+## What is a decomposition model?
+
+## Data
+
+## Additive Decomposition Model
+
+### Trend Component
+
+```{r}
+
+```
+
+
+### Seasonal Component
+
+```{r}
+
+```
+
+
+### Random Component
+
+```{r}
+
+```
+
