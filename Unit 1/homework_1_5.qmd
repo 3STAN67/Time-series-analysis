@@ -45,7 +45,7 @@ Please research the time series. In the spaces below, give the data collection p
 <https://fred.stlouisfed.org/series/M03022USM583NNBR>
 
 ::: {.callout-note title="Answer" icon="false"}
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+This is a historical time-series data set that records the monthly volume of boats or other means of transportation cleared in foreign trade for the U.S. in units of thousands of net tons. Cleared in this context would be vessels that have departed. This is data was collected by the U.S. Bureau of Foreign and Domestic Commerce and later digitized by the National Bureau of Economic Research.
 :::
 
 ### Question 2: Seasonally Adjusted Series - Calculation and Plot (10 points)
@@ -54,7 +54,23 @@ Please research the time series. In the spaces below, give the data collection p
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
-# Please provide your code here
+#| warning: false
+
+vessels_clean <- vessels %>% 
+  mutate(date2 = dmy(date),
+         year_month = yearmonth(date2)
+         ) %>% 
+  select(year_month, vessels) 
+
+vessel_ts <- vessels_clean %>% 
+  tsibble(index = year_month)
+  
+
+vessels_decomp <- vessel_ts %>% 
+  model(feasts::classical_decomposition(vessels, type = "mult")) %>% 
+  components()
+
+autoplot(vessels_decomp)
 
 ```
 :::
@@ -63,7 +79,19 @@ Please research the time series. In the spaces below, give the data collection p
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
-# Please provide your code here
+ggplot() +
+  geom_line(data = vessels_decomp,aes(x = year_month, y = vessels), color = "blue") +
+  geom_line(data = vessels_decomp, aes(x = year_month, y = season_adjust)) +
+  labs(
+    title = "Vessels Cleared in Foreign Trade",
+    x = "Date",
+    y = "Thousands of Net Tons",
+    caption = "Black - Seasonally Adjusted /n Blue - Non-Seasonally Adjusted"
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
 
 ```
 :::
@@ -74,7 +102,15 @@ Please research the time series. In the spaces below, give the data collection p
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
-# Please provide your code here
+#| warning: false
+
+ggplot() +
+  geom_line(data = vessels_decomp, aes(x = year_month, y = random)) +
+  labs(
+    title = "Vessels Cleared in Foreign Trade Random Component",
+    x = "Date",
+    y = "Thousands of Net Tons"
+  )
 
 ```
 :::
@@ -83,7 +119,19 @@ Please research the time series. In the spaces below, give the data collection p
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
-# Please provide your code here
+#| warning: false
+
+vessel_add_decomp <- vessel_ts %>% 
+  model(feasts::classical_decomposition(vessels, type = "add")) %>% 
+  components()
+
+ggplot() +
+  geom_line(data = vessel_add_decomp, aes(x = year_month, y = random)) +
+  labs(
+    title = "Vessels Cleared in Foreign Trade Additive Random Component",
+    x = "Date",
+    y = "Thousands of Net Tons"
+  )
 
 ```
 :::
@@ -92,17 +140,17 @@ Please research the time series. In the spaces below, give the data collection p
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
-# Please provide your code here
+
 
 ```
 
-<!-- Delete this and put your answer here. -->
+The additive model greatly overestimates the random compnent shown by the much large scale of the y-axis compared to the multiplicative model. This makes sense as the additive model does not accuretly scale the seasonal component so it would be compensated by the trend or random component.
 :::
 
 ## Rubric
 
 |  |  |  |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | **Criteria** | **Mastery (10)** | **Incomplete (0)** |
 | **Question 1: Context and Measurement** | The student provides a clear and detailed explanation of the data collection process, unit of analysis, and meaning of each observation for the series | The student provides a basic explanation of the data context, but some details are missing or unclear. |
 |  | **Mastery (5)** | **Incomplete (0)** |
