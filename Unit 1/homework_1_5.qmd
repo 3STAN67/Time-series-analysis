@@ -29,7 +29,7 @@ vessels <- rio::import("https://byuistats.github.io/timeseries/data/Vessels_Trad
 ```
 
 ::: {.callout-note title="Revisions" icon="false"}
-I updated question 1a
+I updated both of the question about context for the data and comparing the additive and multiplicative random components. I also added a table for question 1.
 :::
 
 ## Questions
