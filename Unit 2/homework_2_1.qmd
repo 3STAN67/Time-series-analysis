@@ -1,0 +1,195 @@
+---
+title: "Time Series Homework: Chapter 2 Lesson 1"
+subtitle: "Tristan Farrow"
+format: 
+  html:
+    embed-resources: true
+    toc: true
+    code-fold: true
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Loading R packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, 
+               tsibble, fable,
+               feasts, tsibbledata,
+               fable.prophet,
+               patchwork,
+               lubridate, 
+               rio,
+               ggplot2,
+               kableExtra
+               )
+```
+
+## Data
+
+```{r, message=FALSE}
+
+okuns <- rio::import("https://byuistats.github.io/timeseries/data/outputgap_and_cyclical_unemp.xlsx")
+
+gs_night <- rio::import("https://byuistats.github.io/timeseries/data/nightstand-sweat.csv")
+
+```
+
+## Questions
+
+### Question 1 - Context and Measurement (10 points)
+
+The first part of any time series analysis is context. You cannot properly analyze data without knowing what the data is measuring. Without context, the most simple features of data can be obscure and inscrutable. This homework assignment will center around the series below.
+
+Please research the time series. In the spaces below, give the data collection process, unit of analysis, and meaning of each observation for the series.
+
+#### a) **Output Gap**
+
+<https://chat.openai.com/share/122aaad9-2be6-43ec-b58a-e1858305b401>
+
+::: {.callout-note title="Answer" icon="false"}
+The output gap is the difference between the potential GDP and actual. Potential GDP is the level of output the economy can produce when operating at full capacity. This can be calculated with formulas that build on economic functions like the Cobb-Douglas. Real GDP measures the actual output of an economy adjusted for inflation. Nominal GDP is the total price and quantity of all sold goods and then it is adjusted for inflation to get the Real GDP. The difference between potential and real is the Output Gap. These are measured in US Dollar amounts.
+:::
+
+#### b) **Cyclical Unemployment**
+
+<https://chat.openai.com/share/7d6bf187-41d0-42c3-98bc-d02ea1bd5b80>
+
+::: {.callout-note title="Answer" icon="false"}
+Unemployment is measured with a Current Population Survey census and is conducted by Census Bureau on a monthly basis. It polls about 60,000 eligible homes across different geographical places in the US. Total unemployment can be broken down into 3 different sections: frictional, structural, and cyclical. Cyclical unemployment is unemployment created by downturns in the economy. Unemployment of all types are always reported as % of the labor force.
+:::
+
+### Question 2 - Covariance and Correlation: Okun's Law (30) points)
+
+Okun's Law is an empirical relationship defined as a negative correlation between the Output Gap and Cyclical Unemployment. If the economy is expanding, businesses are producing more, and unemployment tends to decrease. Conversely, during economic contractions or recessions, output shrinks, leading to an increase in unemployment.
+
+Please use the data ***okuns*** to test whether Okun's Law applies to the US from 1960 to 2021.
+
+##### a) Please create a scatter plot of the Output Gap in the x-axis and Cyclical Unemployment in the y-axis.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+ggplot(
+  data = okuns,
+  aes(x = `Output Gap`, y = `Cyclical Unemployment`)
+) + 
+  geom_point() +
+  labs(
+    title = "Okun's Law"
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+:::
+
+##### b) Please calculate the covariance and correlation coefficient between the Output Gap and Cyclical Unemployment.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+gap_umep_cor <- cor(okuns$`Output Gap`, okuns$`Cyclical Unemployment`)
+gap_umep_cov <- cov(okuns$`Output Gap`, okuns$`Cyclical Unemployment`)
+
+print(paste("Covariance: ",gap_umep_cov))
+print(paste("Correlation",gap_umep_cor))
+```
+:::
+
+##### c) Evaluate Okun's law. Is there sufficient evidence to suggest an empirical relationship between the Output Gap and Cyclical Unemployment?
+
+::: {.callout-note title="Answer" icon="false"}
+The correlation between the 2 factors is -0.886 if rounded to the third decimal point. Correlation ranges between -1 and 1 and so this is a very strong negative correlation. Okun's law is the defined by the inverse relationship between Output Gap and Cyclical Unemployment and so it appears to be reaffirm by this data.
+:::
+
+### Question 3 - Correlation vs Causation: Spurious Searches (30 points)
+
+::: quote
+*"Every single person who confuses correlation and causation ends up dying."*
+
+Hannah Fry
+:::
+
+Please use the data ***gs_night*** to evaluate the empirical relationship between the Google search terms for *night sweats* and *nightstand.*
+
+##### a) Please create a scatter plot of the night sweat search index in the x-axis and nightstand search index in the y-axis.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+ggplot(
+  data = gs_night,
+  aes(x = nightstand, y = `night sweat`)
+) +
+  geom_point() +
+  labs(
+    title = "Google Searches for Night Sweat and Night Stand",
+    x = "Number of Google searches for nightstand",
+    y = "Number of Google searches for night sweat"
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+:::
+
+##### b) Please calculate the covariance and correlation between the night sweat search index and the nightstand search index.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+night_cov <- cov(gs_night$nightstand, gs_night$`night sweat`)
+night_cor <- cor(gs_night$nightstand, gs_night$`night sweat`)
+
+print(paste("Covariance: ", night_cov))
+print(paste("Correlation: ", night_cor))
+```
+:::
+
+##### c) Please suggest a scenario where an increase in the frequency of searches for nightstand will cause higher searches for the term night sweats?
+
+::: {.callout-note title="Answer" icon="false"}
+Tech nightstands have heating issues from charging phones leading to hot rooms at night.
+:::
+
+##### d) Please suggest a scenario where an increase in the frequency of searches for night sweats will cause higher searches for the term nightstand?
+
+::: {.callout-note title="Answer" icon="false"}
+Nightstand fans ads are targeted for people searching the words "night sweats".
+:::
+
+##### e) Please suggest an event or reason that would result in the correlation between searches for night sweats and searches for the term nightstand?
+
+::: {.callout-note title="Answer" icon="false"}
+A seasonal heatwave has people looking for nightstand fans to cool them off at night.
+:::
+
+##### f) Are any of your suggestions plausible? What does that teach you about the difference between correlation and causation? Please elaborate.
+
+::: {.callout-note title="Answer" icon="false"}
+These are not very plausible and rather funny. Correlation and causation can be connected but it takes more evidence than correlation to show causation.
+:::
+
+### Rubric
+
+|  |  |
+|:--:|----|
+| **Criteria** | **Ratings** |
+|  | **Complete (10)** |
+| **Question 1: Context and Measurement** | The student demonstrates a clear understanding of the context for each data series. The explanation includes details about the data collection process, unit of analysis, and the meaning of each observation. |
+|  | **Complete (5)** |
+| **Question 2a: Scatter Plot** | The scatter plot is appropriately titled, and all elements, including the plot itself, axis labels, and title, are clearly labeled. The scatter plot matches or exceeds the quality of the scatter plots shown in lecture. |
+|  | **Complete (5)** |
+| **Question 2b: Covariance and Correlation Calculation** | The student effectively utilizes R to correctly calculate covariance and correlation. |
+|  | **Complete (10)** |
+| **Question 2c:Interpretation and Evaluation** | The student provides a clear and accurate interpretation of the correlation between the variables. The response demostrates understanding of how the correlation coefficient quantifies the strength and direction of the relationship between the variables. |
+|  | **Complete (10)** |
+| **Question 2c: Okun's Law** | The discussion of Okun's law makes clear the student understands how to use statistical evidence to evaluate scientific claims in the context of an academic field. |
+|  | **Complete (5)** |
+| **Question 3a: Scatter Plot** | The scatter plot is appropriately titled, and all elements, including the plot itself, axis labels, and title, are clearly labeled. The scatter plot matches or exceeds the quality of the scatter plots shown in lecture. |
+|  | **Complete (5)** |
+| **Question 3b: Covariance and Correlation Calculation** | The student effectively utilizes R to correctly calculate covariance and correlation. |
+|  | **Complete (10)** |
+| **Question 3(c,d,e):Scenarios** | The scenarios suggested are clear and concise. The responses show an honest attempt at thinking of a connection between the variables according to the prompt. |
+|  | **Complete (10)** |
+| **Question 3: Plausiblity** | The student provides a critical evaluation is provided regarding the plausibility of the suggested scenarios and events. The evaluation includes a clear and comprehensive explanation on the difference between correlation and causation. |
+| **Total Points** | **70** |
