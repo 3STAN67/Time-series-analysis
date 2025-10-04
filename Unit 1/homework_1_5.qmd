@@ -29,7 +29,7 @@ vessels <- rio::import("https://byuistats.github.io/timeseries/data/Vessels_Trad
 ```
 
 ::: {.callout-note title="Revisions" icon="false"}
-<!-- Delete this and put your homework revisions here. -->
+I updated both of the question about context for the data and comparing the additive and multiplicative random components. I also added a table for question 1.
 :::
 
 ## Questions
@@ -45,7 +45,7 @@ Please research the time series. In the spaces below, give the data collection p
 <https://fred.stlouisfed.org/series/M03022USM583NNBR>
 
 ::: {.callout-note title="Answer" icon="false"}
-This is a historical time-series data set that records the monthly volume of boats or other means of transportation cleared in foreign trade for the U.S. in units of thousands of net tons. Cleared in this context would be vessels that have departed. This is data was collected by the U.S. Bureau of Foreign and Domestic Commerce and later digitized by the National Bureau of Economic Research.
+This is a historical time-series data set that records the monthly volume of boats or other means of transportation cleared in foreign trade for the U.S. in units of tons of per 100 cubit feet. Prior to vessels leaving cargo has to be declared with details of the origin and destination, weight, and general details. This is data was collected by the U.S. Bureau of Foreign and Domestic Commerce and later digitized by the National Bureau of Economic Research.
 :::
 
 ### Question 2: Seasonally Adjusted Series - Calculation and Plot (10 points)
@@ -68,9 +68,10 @@ vessel_ts <- vessels_clean %>%
 
 vessels_decomp <- vessel_ts %>% 
   model(feasts::classical_decomposition(vessels, type = "mult")) %>% 
-  components()
+  components() |> 
+  select(!.model)
 
-autoplot(vessels_decomp)
+head(vessels_decomp, 10)
 
 ```
 :::
@@ -144,7 +145,9 @@ ggplot() +
 
 ```
 
-The additive model greatly overestimates the random compnent shown by the much large scale of the y-axis compared to the multiplicative model. This makes sense as the additive model does not accuretly scale the seasonal component so it would be compensated by the trend or random component.
+The multiplicative model assumes that the seasonal variation increases with the trend compared to an additive model where the seasonal variation is constant over time. Comparing the random components above, the multiplicative model random component hovers around 1 and the additive model centers around 0 but has much larger variation.
+
+The larger seasonal swings can not be accounted for by the additive model as they are not constant and so are passed to the random variable explaining the greater variation. The multiplicative model does account for this and retains the greater seasonal effect in the seasonal component leading to less variation in the random component.
 :::
 
 ## Rubric
