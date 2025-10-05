@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tristan Farrow">
-<meta name="dcterms.date" content="2025-10-01">
+<meta name="dcterms.date" content="2025-10-04">
 
 <title>Decomposition Project</title>
 <style>
@@ -23,9 +23,8 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -36,7 +35,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -61,22 +60,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <script src="Decomposition_project_files/libs/clipboard/clipboard.min.js"></script>
-<script src="Decomposition_project_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="Decomposition_project_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Decomposition_project_files/libs/quarto-html/quarto.js"></script>
 <script src="Decomposition_project_files/libs/quarto-html/popper.min.js"></script>
 <script src="Decomposition_project_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="Decomposition_project_files/libs/quarto-html/anchor.min.js"></script>
 <link href="Decomposition_project_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Decomposition_project_files/libs/quarto-html/quarto-syntax-highlighting-9f30c2c2d2429ed22c1cf9f617479b3b.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="Decomposition_project_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="Decomposition_project_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Decomposition_project_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="Decomposition_project_files/libs/bootstrap/bootstrap-5f3c6abe43c2aa59be252876db3c2943.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="Decomposition_project_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <style>html{ scroll-behavior: smooth; }</style>
 
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="fullcontent">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 
@@ -84,7 +82,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Decomposition Project</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Decomposition Project</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -101,7 +99,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 1, 2025</p>
+      <p class="date">October 4, 2025</p>
     </div>
   </div>
   
@@ -117,20 +115,294 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Decomposition Project</h1>
 <section id="what-is-a-decomposition-model" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-a-decomposition-model">What is a decomposition model?</h2>
+<p>A decomposition model separates time series data into three components: the trend, seasonality, and random (irregular) components. This separation helps distinguish long-term movements from recurring seasonal patterns and random fluctuations caused by market changes, such as supply chain disruptions during COVID-19.</p>
+<p>There are two main types of decomposition models: additive and multiplicative. A multiplicative model is most appropriate when the magnitude of seasonal variations increases with the overall trend, as observed in this data set. In contrast, an additive model is better suited when the seasonal component remains relatively constant, regardless of changes in the trend.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Read in the needed libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">"pacman"</span>)) <span class="fu">install.packages</span>(<span class="st">"pacman"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, </span>
+<span id="cb1-4"><a href="#cb1-4"></a>               tsibble, fable,</span>
+<span id="cb1-5"><a href="#cb1-5"></a>               feasts, tsibbledata,</span>
+<span id="cb1-6"><a href="#cb1-6"></a>               fable.prophet,</span>
+<span id="cb1-7"><a href="#cb1-7"></a>               patchwork,</span>
+<span id="cb1-8"><a href="#cb1-8"></a>               lubridate, </span>
+<span id="cb1-9"><a href="#cb1-9"></a>               rio,</span>
+<span id="cb1-10"><a href="#cb1-10"></a>               ggplot2</span>
+<span id="cb1-11"><a href="#cb1-11"></a>               )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>The Total Residential Construction Spending (TLRESCON) data set from the Federal Reserve Economic Data (FRED) tracks total residential construction spending in the United States. The data is derived from the Value of Construction Put in Place (VIP) survey, conducted monthly by the U.S. Census Bureau. Residential spending includes expenditures on new single-family and multi-family housing, such as new apartments and condominiums, as well as improvements like remodeling, additions, and major replacements.</p>
+<p>Construction spending is a key economic indicator because it reflects both consumer and business confidence in the economy. Rising residential construction suggests strong demand for housing, higher household income, and positive expectations for future growth. Conversely, declines in construction activity can signal economic slowdowns, tighter credit conditions, or reduced investment in real assets.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Read in the CSV file</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"TLRESCON.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># Convert the data frame to a time series tibble</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>df_ts <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb2-6"><a href="#cb2-6"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-7"><a href="#cb2-7"></a>    <span class="at">date2 =</span> <span class="fu">ymd</span>(observation_date),</span>
+<span id="cb2-8"><a href="#cb2-8"></a>    <span class="at">month =</span> <span class="fu">month</span>(date2),</span>
+<span id="cb2-9"><a href="#cb2-9"></a>    <span class="at">year =</span> <span class="fu">year</span>(date2),</span>
+<span id="cb2-10"><a href="#cb2-10"></a>    <span class="at">ym =</span> <span class="fu">yearmonth</span>(date2)</span>
+<span id="cb2-11"><a href="#cb2-11"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-12"><a href="#cb2-12"></a>  <span class="fu">select</span>(ym, TLRESCON) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-13"><a href="#cb2-13"></a>  <span class="fu">tsibble</span>(<span class="at">index =</span> ym)</span>
+<span id="cb2-14"><a href="#cb2-14"></a></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co"># Plot the data</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="fu">ggplot</span>(</span>
+<span id="cb2-17"><a href="#cb2-17"></a>  df_ts,</span>
+<span id="cb2-18"><a href="#cb2-18"></a>  <span class="fu">aes</span>(<span class="at">x =</span> ym, <span class="at">y =</span> TLRESCON)</span>
+<span id="cb2-19"><a href="#cb2-19"></a>) <span class="sc">+</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue3"</span>) <span class="sc">+</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-22"><a href="#cb2-22"></a>    <span class="at">title =</span> <span class="st">"Total Residential Construction Spending (2002-2025)"</span>,</span>
+<span id="cb2-23"><a href="#cb2-23"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb2-24"><a href="#cb2-24"></a>    <span class="at">y =</span> <span class="st">"Millions of Dollars ($)"</span></span>
+<span id="cb2-25"><a href="#cb2-25"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb2-27"><a href="#cb2-27"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_dollar</span>()</span>
+<span id="cb2-28"><a href="#cb2-28"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-29"><a href="#cb2-29"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb2-30"><a href="#cb2-30"></a>  <span class="fu">theme</span>(</span>
+<span id="cb2-31"><a href="#cb2-31"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-32"><a href="#cb2-32"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Decomposition_project_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="additive-decomposition-model" class="level2">
-<h2 class="anchored" data-anchor-id="additive-decomposition-model">Additive Decomposition Model</h2>
+<section id="decomposition-model" class="level2">
+<h2 class="anchored" data-anchor-id="decomposition-model">Decomposition Model</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Run the multiplicative model</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>df_decomp <span class="ot">&lt;-</span> df_ts <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">model</span>(feasts<span class="sc">::</span><span class="fu">classical_decomposition</span>(TLRESCON, <span class="at">type =</span> <span class="st">"mult"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="fu">components</span>()</span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="fu">autoplot</span>(df_decomp, <span class="at">color =</span> <span class="st">"blue3"</span>) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-8"><a href="#cb3-8"></a>    <span class="at">title =</span> <span class="st">"Residential Construction Spending Multiplicative Decomposition Model"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10"></a>    <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb3-11"><a href="#cb3-11"></a>    <span class="at">caption =</span> <span class="st">"Source: U.S. Census Bureau, Total Construction Spending: Residential in the U.S. (via. FRED)"</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>  <span class="fu">theme</span>(</span>
+<span id="cb3-15"><a href="#cb3-15"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb3-16"><a href="#cb3-16"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Decomposition_project_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <section id="trend-component" class="level3">
 <h3 class="anchored" data-anchor-id="trend-component">Trend Component</h3>
+<p>The trend component appears to be the main driver of the Total Residential Construction Spending data, as it shows the largest magnitude relative to the seasonal and random components. Historically, the trend aligns closely with major economic events. Spending peaked in 2006 before the 2008 financial crisis, followed by a sharp decline of roughly 50% for the next two years.</p>
+<p>Prior to the COVID-19 outbreak in 2020, there was a modest dip in residential construction spending. However, spending surged to record highs shortly after, driven by a combination of supply chain disruptions, limited new housing supply, and historically low mortgage rates. These factors contributed to rapid home price appreciation, while increased time spent at home led to a rise in DIY renovation and improvement projects. Elevated construction costs since 2020 may also be partially explained by this heightened level of demand and investment in residential construction.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Plot the Trend</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">ggplot</span>(</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  df_decomp,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="fu">aes</span>(<span class="at">x =</span> ym, <span class="at">y =</span> trend)</span>
+<span id="cb4-5"><a href="#cb4-5"></a>) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue3"</span>, <span class="at">linewidth =</span> .<span class="dv">75</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-8"><a href="#cb4-8"></a>    <span class="at">title =</span> <span class="st">"U.S. Residential Construction Spending"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9"></a>    <span class="at">subtitle =</span> <span class="st">"Trend Component (2002-2025)"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11"></a>    <span class="at">y =</span> <span class="st">"Millions of Dollars ($)"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12"></a>    <span class="at">caption =</span> <span class="st">"Source: U.S. Census Bureau, Total Construction Spending: Residential in the U.S. (via. FRED)"</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb4-15"><a href="#cb4-15"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_dollar</span>()</span>
+<span id="cb4-16"><a href="#cb4-16"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a>  <span class="fu">theme</span>(</span>
+<span id="cb4-19"><a href="#cb4-19"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb4-20"><a href="#cb4-20"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb4-21"><a href="#cb4-21"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Decomposition_project_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="seasonal-component" class="level3">
 <h3 class="anchored" data-anchor-id="seasonal-component">Seasonal Component</h3>
+<p>The seasonal component appears relatively small compared to the overall scale of the data. However, the table below indicates that activity peaks in July, gradually tapering off through the winter months before rising again in the spring and summer. This pattern aligns with typical construction cycles, as adverse weather conditions in winter often slow outdoor projects. Many construction firms complete framing and exterior work before winter and shift to interior projects during the colder months.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Plot the Seasonality Component</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">ggplot</span>(</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  df_decomp,</span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.Date</span>(ym), <span class="at">y =</span> seasonal)</span>
+<span id="cb5-5"><a href="#cb5-5"></a>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue3"</span>, <span class="at">linewidth =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-8"><a href="#cb5-8"></a>    <span class="at">title =</span> <span class="st">"U.S. Residential Construction Spending"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9"></a>    <span class="at">subtitle =</span> <span class="st">"Seasonal Component (2020-2025)"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11"></a>    <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb5-12"><a href="#cb5-12"></a>    <span class="at">caption =</span> <span class="st">"Source: U.S. Census Bureau, Total Construction Spending: Residential in the U.S. (via. FRED)"</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>  <span class="fu">scale_x_date</span>(<span class="at">limits =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">"2020-01-01"</span>, <span class="st">"2025-01-01"</span>))) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a>  <span class="fu">theme</span>(</span>
+<span id="cb5-17"><a href="#cb5-17"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb5-18"><a href="#cb5-18"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb5-19"><a href="#cb5-19"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Decomposition_project_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co"># Monthly Averages</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>df_monthly <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-6"><a href="#cb6-6"></a>    <span class="at">date2 =</span> <span class="fu">ymd</span>(observation_date),</span>
+<span id="cb6-7"><a href="#cb6-7"></a>    <span class="at">month =</span> <span class="fu">month</span>(date2),</span>
+<span id="cb6-8"><a href="#cb6-8"></a>    <span class="at">year =</span> <span class="fu">year</span>(date2)</span>
+<span id="cb6-9"><a href="#cb6-9"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-10"><a href="#cb6-10"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span> </span>
+<span id="cb6-11"><a href="#cb6-11"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb6-12"><a href="#cb6-12"></a>  <span class="at">average =</span> <span class="fu">mean</span>(TLRESCON), <span class="at">grouping =</span> <span class="st">".drop"</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-14"><a href="#cb6-14"></a>  <span class="fu">select</span>(month, average)</span>
+<span id="cb6-15"><a href="#cb6-15"></a></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="fu">kable</span>(df_monthly)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">month</th>
+<th style="text-align: right;">average</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">36337.62</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">36274.79</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">42136.46</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">44839.88</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">47292.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">49602.21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">50674.42</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">49594.52</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">47401.83</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">47144.87</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">43885.61</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">38814.26</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 <section id="random-component" class="level3">
 <h3 class="anchored" data-anchor-id="random-component">Random Component</h3>
+<p>The random component remains relatively stable, fluctuating around the $1.00 level with noticeable variations in both directions. While the largest deviations coincide with major historical events, they are not substantially greater than other fluctuations observed throughout the period.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Plot the Random Component</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">ggplot</span>(</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  df_decomp,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">aes</span>(<span class="at">x =</span> ym, <span class="at">y =</span> random)</span>
+<span id="cb7-5"><a href="#cb7-5"></a>) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue3"</span>, <span class="at">linewidth =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-8"><a href="#cb7-8"></a>    <span class="at">title =</span> <span class="st">"U.S. Residential Construction Spending"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9"></a>    <span class="at">subtitle =</span> <span class="st">"Random Component (2002-2025)"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11"></a>    <span class="at">y =</span> <span class="st">"Millions of Dollars ($)"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12"></a>    <span class="at">caption =</span> <span class="st">"Source: U.S. Census Bureau, Total Construction Spending: Residential in the U.S. (via. FRED)"</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb7-15"><a href="#cb7-15"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_dollar</span>()</span>
+<span id="cb7-16"><a href="#cb7-16"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a>  <span class="fu">theme</span>(</span>
+<span id="cb7-19"><a href="#cb7-19"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb7-20"><a href="#cb7-20"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb7-21"><a href="#cb7-21"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Decomposition_project_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <!-- -->
 
 </section>
@@ -140,298 +412,295 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
       }
       return false;
     }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
-    const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
           }
-        }
-        return codeEl.innerText;
-    }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
-    });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
-    }
-    const viewSource = window.document.getElementById('quarto-view-source') ||
-                       window.document.getElementById('quarto-code-tools-source');
-    if (viewSource) {
-      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-      viewSource.addEventListener("click", function(e) {
-        if (sourceUrl) {
-          // rstudio viewer pane
-          if (/\bcapabilities=\b/.test(window.location)) {
-            window.open(sourceUrl);
-          } else {
-            window.location.href = sourceUrl;
-          }
-        } else {
-          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-          modal.show();
-        }
-        return false;
-      });
-    }
-    function toggleCodeHandler(show) {
-      return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
-          if (show) {
-            details.open = true;
-          } else {
-            details.removeAttribute("open");
-          }
-        }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-        const fromCls = show ? "hidden" : "unhidden";
-        const toCls = show ? "unhidden" : "hidden";
-        for (let i=0; i<cellCodeDivs.length; i++) {
-          const codeDiv = cellCodeDivs[i];
-          if (codeDiv.classList.contains(fromCls)) {
-            codeDiv.classList.remove(fromCls);
-            codeDiv.classList.add(toCls);
-          } 
-        }
-        return false;
       }
     }
-    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-    if (hideAllCode) {
-      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
     }
-    const showAllCode = window.document.getElementById("quarto-show-all-code");
-    if (showAllCode) {
-      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
     }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
-            // target, if specified
-            link.setAttribute("target", "_blank");
-            if (link.getAttribute("rel") === null) {
-              link.setAttribute("rel", "noopener");
-            }
-        }
-      }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
     }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
-    }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
-        }
-      }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
       } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
         }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
       }
     }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
           }
         } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
+          // See if we can fetch this
+          fetch(url.split('#')[0])
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
+            const note = htmlDoc.getElementById(id);
             if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
+              const html = processXRef(id, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -439,206 +708,403 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             instance.show();
           });
         }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
       } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
             }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
         });
       }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
     }
-  });
-  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="an">title:</span><span class="co"> "Decomposition Project"</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="an">author:</span><span class="co"> "Tristan Farrow"</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="an">date:</span><span class="co"> today</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="an">format:</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co">  html:</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">    theme: sandstone</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">    toc: false</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">    code-fold: true</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">    code-tools: true</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co">    code-line-numbers: true</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">    smooth-scroll: true</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="co">    link-external-newwindow: true</span></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co">    highlight-style: monokai</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">---</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="fu"># Decomposition Project</span></span>
-<span id="cb1-19"><a href="#cb1-19"></a></span>
-<span id="cb1-20"><a href="#cb1-20"></a><span class="fu">## What is a decomposition model?</span></span>
-<span id="cb1-21"><a href="#cb1-21"></a></span>
-<span id="cb1-22"><a href="#cb1-22"></a><span class="fu">## Data</span></span>
-<span id="cb1-23"><a href="#cb1-23"></a></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="in">```{r}</span></span>
-<span id="cb1-27"><a href="#cb1-27"></a><span class="in">```</span></span>
-<span id="cb1-28"><a href="#cb1-28"></a></span>
-<span id="cb1-29"><a href="#cb1-29"></a></span>
-<span id="cb1-30"><a href="#cb1-30"></a><span class="fu">## Additive Decomposition Model</span></span>
-<span id="cb1-31"><a href="#cb1-31"></a></span>
-<span id="cb1-32"><a href="#cb1-32"></a><span class="fu">### Trend Component</span></span>
-<span id="cb1-33"><a href="#cb1-33"></a></span>
-<span id="cb1-36"><a href="#cb1-36"></a><span class="in">```{r}</span></span>
-<span id="cb1-37"><a href="#cb1-37"></a><span class="in">```</span></span>
-<span id="cb1-38"><a href="#cb1-38"></a></span>
-<span id="cb1-39"><a href="#cb1-39"></a></span>
-<span id="cb1-40"><a href="#cb1-40"></a><span class="fu">### Seasonal Component</span></span>
-<span id="cb1-41"><a href="#cb1-41"></a></span>
-<span id="cb1-44"><a href="#cb1-44"></a><span class="in">```{r}</span></span>
-<span id="cb1-45"><a href="#cb1-45"></a><span class="in">```</span></span>
-<span id="cb1-46"><a href="#cb1-46"></a></span>
-<span id="cb1-47"><a href="#cb1-47"></a></span>
-<span id="cb1-48"><a href="#cb1-48"></a><span class="fu">### Random Component</span></span>
-<span id="cb1-49"><a href="#cb1-49"></a></span>
-<span id="cb1-52"><a href="#cb1-52"></a><span class="in">```{r}</span></span>
-<span id="cb1-53"><a href="#cb1-53"></a><span class="in">```</span></span>
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="an">title:</span><span class="co"> "Decomposition Project"</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="an">author:</span><span class="co"> "Tristan Farrow"</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="an">format:</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co">  html:</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co">    theme: sandstone</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">    toc: false</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">    code-fold: true</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">    code-tools: true</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co">    code-line-numbers: true</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co">    smooth-scroll: true</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="co">    link-external-newwindow: true</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="co">    highlight-style: monokai</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co">---</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="fu"># Decomposition Project</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="fu">## What is a decomposition model?</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a></span>
+<span id="cb8-21"><a href="#cb8-21"></a>A decomposition model separates time series data into three components: the trend, seasonality, and random (irregular) components. This separation helps distinguish long-term movements from recurring seasonal patterns and random fluctuations caused by market changes, such as supply chain disruptions during COVID-19.</span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a>There are two main types of decomposition models: additive and multiplicative. A multiplicative model is most appropriate when the magnitude of seasonal variations increases with the overall trend, as observed in this data set. In contrast, an additive model is better suited when the seasonal component remains relatively constant, regardless of changes in the trend.</span>
+<span id="cb8-24"><a href="#cb8-24"></a></span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="in">```{r}</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="co">#| message: false</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-30"><a href="#cb8-30"></a></span>
+<span id="cb8-31"><a href="#cb8-31"></a><span class="co"># Read in the needed libraries</span></span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">"pacman"</span>)) <span class="fu">install.packages</span>(<span class="st">"pacman"</span>)</span>
+<span id="cb8-33"><a href="#cb8-33"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, </span>
+<span id="cb8-34"><a href="#cb8-34"></a>               tsibble, fable,</span>
+<span id="cb8-35"><a href="#cb8-35"></a>               feasts, tsibbledata,</span>
+<span id="cb8-36"><a href="#cb8-36"></a>               fable.prophet,</span>
+<span id="cb8-37"><a href="#cb8-37"></a>               patchwork,</span>
+<span id="cb8-38"><a href="#cb8-38"></a>               lubridate, </span>
+<span id="cb8-39"><a href="#cb8-39"></a>               rio,</span>
+<span id="cb8-40"><a href="#cb8-40"></a>               ggplot2</span>
+<span id="cb8-41"><a href="#cb8-41"></a>               )</span>
+<span id="cb8-42"><a href="#cb8-42"></a><span class="in">```</span></span>
+<span id="cb8-43"><a href="#cb8-43"></a></span>
+<span id="cb8-44"><a href="#cb8-44"></a><span class="fu">## Data</span></span>
+<span id="cb8-45"><a href="#cb8-45"></a></span>
+<span id="cb8-46"><a href="#cb8-46"></a>The Total Residential Construction Spending (TLRESCON) data set from the Federal Reserve Economic Data (FRED) tracks total residential construction spending in the United States. The data is derived from the Value of Construction Put in Place (VIP) survey, conducted monthly by the U.S. Census Bureau. Residential spending includes expenditures on new single-family and multi-family housing, such as new apartments and condominiums, as well as improvements like remodeling, additions, and major replacements.</span>
+<span id="cb8-47"><a href="#cb8-47"></a></span>
+<span id="cb8-48"><a href="#cb8-48"></a>Construction spending is a key economic indicator because it reflects both consumer and business confidence in the economy. Rising residential construction suggests strong demand for housing, higher household income, and positive expectations for future growth. Conversely, declines in construction activity can signal economic slowdowns, tighter credit conditions, or reduced investment in real assets.</span>
+<span id="cb8-49"><a href="#cb8-49"></a></span>
+<span id="cb8-52"><a href="#cb8-52"></a><span class="in">```{r}</span></span>
+<span id="cb8-53"><a href="#cb8-53"></a><span class="co"># Read in the CSV file</span></span>
+<span id="cb8-54"><a href="#cb8-54"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"TLRESCON.csv"</span>)</span>
+<span id="cb8-55"><a href="#cb8-55"></a></span>
+<span id="cb8-56"><a href="#cb8-56"></a><span class="co"># Convert the data frame to a time series tibble</span></span>
+<span id="cb8-57"><a href="#cb8-57"></a>df_ts <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb8-58"><a href="#cb8-58"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-59"><a href="#cb8-59"></a>    <span class="at">date2 =</span> <span class="fu">ymd</span>(observation_date),</span>
+<span id="cb8-60"><a href="#cb8-60"></a>    <span class="at">month =</span> <span class="fu">month</span>(date2),</span>
+<span id="cb8-61"><a href="#cb8-61"></a>    <span class="at">year =</span> <span class="fu">year</span>(date2),</span>
+<span id="cb8-62"><a href="#cb8-62"></a>    <span class="at">ym =</span> <span class="fu">yearmonth</span>(date2)</span>
+<span id="cb8-63"><a href="#cb8-63"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-64"><a href="#cb8-64"></a>  <span class="fu">select</span>(ym, TLRESCON) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-65"><a href="#cb8-65"></a>  <span class="fu">tsibble</span>(<span class="at">index =</span> ym)</span>
+<span id="cb8-66"><a href="#cb8-66"></a></span>
+<span id="cb8-67"><a href="#cb8-67"></a><span class="co"># Plot the data</span></span>
+<span id="cb8-68"><a href="#cb8-68"></a><span class="fu">ggplot</span>(</span>
+<span id="cb8-69"><a href="#cb8-69"></a>  df_ts,</span>
+<span id="cb8-70"><a href="#cb8-70"></a>  <span class="fu">aes</span>(<span class="at">x =</span> ym, <span class="at">y =</span> TLRESCON)</span>
+<span id="cb8-71"><a href="#cb8-71"></a>) <span class="sc">+</span></span>
+<span id="cb8-72"><a href="#cb8-72"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue3"</span>) <span class="sc">+</span></span>
+<span id="cb8-73"><a href="#cb8-73"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-74"><a href="#cb8-74"></a>    <span class="at">title =</span> <span class="st">"Total Residential Construction Spending (2002-2025)"</span>,</span>
+<span id="cb8-75"><a href="#cb8-75"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb8-76"><a href="#cb8-76"></a>    <span class="at">y =</span> <span class="st">"Millions of Dollars ($)"</span></span>
+<span id="cb8-77"><a href="#cb8-77"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-78"><a href="#cb8-78"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb8-79"><a href="#cb8-79"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_dollar</span>()</span>
+<span id="cb8-80"><a href="#cb8-80"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-81"><a href="#cb8-81"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb8-82"><a href="#cb8-82"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-83"><a href="#cb8-83"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-84"><a href="#cb8-84"></a>  )</span>
+<span id="cb8-85"><a href="#cb8-85"></a></span>
+<span id="cb8-86"><a href="#cb8-86"></a><span class="in">```</span></span>
+<span id="cb8-87"><a href="#cb8-87"></a></span>
+<span id="cb8-88"><a href="#cb8-88"></a><span class="fu">## Decomposition Model</span></span>
+<span id="cb8-89"><a href="#cb8-89"></a></span>
+<span id="cb8-92"><a href="#cb8-92"></a><span class="in">```{r}</span></span>
+<span id="cb8-93"><a href="#cb8-93"></a><span class="co">#| message: false</span></span>
+<span id="cb8-94"><a href="#cb8-94"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-95"><a href="#cb8-95"></a></span>
+<span id="cb8-96"><a href="#cb8-96"></a><span class="co"># Run the multiplicative model</span></span>
+<span id="cb8-97"><a href="#cb8-97"></a>df_decomp <span class="ot">&lt;-</span> df_ts <span class="sc">%&gt;%</span> </span>
+<span id="cb8-98"><a href="#cb8-98"></a><span class="fu">model</span>(feasts<span class="sc">::</span><span class="fu">classical_decomposition</span>(TLRESCON, <span class="at">type =</span> <span class="st">"mult"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-99"><a href="#cb8-99"></a>  <span class="fu">components</span>()</span>
+<span id="cb8-100"><a href="#cb8-100"></a></span>
+<span id="cb8-101"><a href="#cb8-101"></a><span class="fu">autoplot</span>(df_decomp, <span class="at">color =</span> <span class="st">"blue3"</span>) <span class="sc">+</span></span>
+<span id="cb8-102"><a href="#cb8-102"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-103"><a href="#cb8-103"></a>    <span class="at">title =</span> <span class="st">"Residential Construction Spending Multiplicative Decomposition Model"</span>,</span>
+<span id="cb8-104"><a href="#cb8-104"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb8-105"><a href="#cb8-105"></a>    <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb8-106"><a href="#cb8-106"></a>    <span class="at">caption =</span> <span class="st">"Source: U.S. Census Bureau, Total Construction Spending: Residential in the U.S. (via. FRED)"</span></span>
+<span id="cb8-107"><a href="#cb8-107"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-108"><a href="#cb8-108"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb8-109"><a href="#cb8-109"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-110"><a href="#cb8-110"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-111"><a href="#cb8-111"></a>  )</span>
+<span id="cb8-112"><a href="#cb8-112"></a><span class="in">```</span></span>
+<span id="cb8-113"><a href="#cb8-113"></a></span>
+<span id="cb8-114"><a href="#cb8-114"></a><span class="fu">### Trend Component</span></span>
+<span id="cb8-115"><a href="#cb8-115"></a></span>
+<span id="cb8-116"><a href="#cb8-116"></a>The trend component appears to be the main driver of the Total Residential Construction Spending data, as it shows the largest magnitude relative to the seasonal and random components. Historically, the trend aligns closely with major economic events. Spending peaked in 2006 before the 2008 financial crisis, followed by a sharp decline of roughly 50% for the next two years.</span>
+<span id="cb8-117"><a href="#cb8-117"></a></span>
+<span id="cb8-118"><a href="#cb8-118"></a>Prior to the COVID-19 outbreak in 2020, there was a modest dip in residential construction spending. However, spending surged to record highs shortly after, driven by a combination of supply chain disruptions, limited new housing supply, and historically low mortgage rates. These factors contributed to rapid home price appreciation, while increased time spent at home led to a rise in DIY renovation and improvement projects. Elevated construction costs since 2020 may also be partially explained by this heightened level of demand and investment in residential construction.</span>
+<span id="cb8-119"><a href="#cb8-119"></a></span>
+<span id="cb8-122"><a href="#cb8-122"></a><span class="in">```{r}</span></span>
+<span id="cb8-123"><a href="#cb8-123"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-124"><a href="#cb8-124"></a></span>
+<span id="cb8-125"><a href="#cb8-125"></a><span class="co"># Plot the Trend</span></span>
+<span id="cb8-126"><a href="#cb8-126"></a><span class="fu">ggplot</span>(</span>
+<span id="cb8-127"><a href="#cb8-127"></a>  df_decomp,</span>
+<span id="cb8-128"><a href="#cb8-128"></a>  <span class="fu">aes</span>(<span class="at">x =</span> ym, <span class="at">y =</span> trend)</span>
+<span id="cb8-129"><a href="#cb8-129"></a>) <span class="sc">+</span></span>
+<span id="cb8-130"><a href="#cb8-130"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue3"</span>, <span class="at">linewidth =</span> .<span class="dv">75</span>) <span class="sc">+</span></span>
+<span id="cb8-131"><a href="#cb8-131"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-132"><a href="#cb8-132"></a>    <span class="at">title =</span> <span class="st">"U.S. Residential Construction Spending"</span>,</span>
+<span id="cb8-133"><a href="#cb8-133"></a>    <span class="at">subtitle =</span> <span class="st">"Trend Component (2002-2025)"</span>,</span>
+<span id="cb8-134"><a href="#cb8-134"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb8-135"><a href="#cb8-135"></a>    <span class="at">y =</span> <span class="st">"Millions of Dollars ($)"</span>,</span>
+<span id="cb8-136"><a href="#cb8-136"></a>    <span class="at">caption =</span> <span class="st">"Source: U.S. Census Bureau, Total Construction Spending: Residential in the U.S. (via. FRED)"</span></span>
+<span id="cb8-137"><a href="#cb8-137"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-138"><a href="#cb8-138"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb8-139"><a href="#cb8-139"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_dollar</span>()</span>
+<span id="cb8-140"><a href="#cb8-140"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-141"><a href="#cb8-141"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb8-142"><a href="#cb8-142"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-143"><a href="#cb8-143"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb8-144"><a href="#cb8-144"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-145"><a href="#cb8-145"></a>  )</span>
+<span id="cb8-146"><a href="#cb8-146"></a></span>
+<span id="cb8-147"><a href="#cb8-147"></a><span class="in">```</span></span>
+<span id="cb8-148"><a href="#cb8-148"></a></span>
+<span id="cb8-149"><a href="#cb8-149"></a><span class="fu">### Seasonal Component</span></span>
+<span id="cb8-150"><a href="#cb8-150"></a></span>
+<span id="cb8-151"><a href="#cb8-151"></a>The seasonal component appears relatively small compared to the overall scale of the data. However, the table below indicates that activity peaks in July, gradually tapering off through the winter months before rising again in the spring and summer. This pattern aligns with typical construction cycles, as adverse weather conditions in winter often slow outdoor projects. Many construction firms complete framing and exterior work before winter and shift to interior projects during the colder months.</span>
+<span id="cb8-152"><a href="#cb8-152"></a></span>
+<span id="cb8-155"><a href="#cb8-155"></a><span class="in">```{r}</span></span>
+<span id="cb8-156"><a href="#cb8-156"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-157"><a href="#cb8-157"></a></span>
+<span id="cb8-158"><a href="#cb8-158"></a><span class="co"># Plot the Seasonality Component</span></span>
+<span id="cb8-159"><a href="#cb8-159"></a><span class="fu">ggplot</span>(</span>
+<span id="cb8-160"><a href="#cb8-160"></a>  df_decomp,</span>
+<span id="cb8-161"><a href="#cb8-161"></a>  <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.Date</span>(ym), <span class="at">y =</span> seasonal)</span>
+<span id="cb8-162"><a href="#cb8-162"></a>) <span class="sc">+</span></span>
+<span id="cb8-163"><a href="#cb8-163"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue3"</span>, <span class="at">linewidth =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
+<span id="cb8-164"><a href="#cb8-164"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-165"><a href="#cb8-165"></a>    <span class="at">title =</span> <span class="st">"U.S. Residential Construction Spending"</span>,</span>
+<span id="cb8-166"><a href="#cb8-166"></a>    <span class="at">subtitle =</span> <span class="st">"Seasonal Component (2020-2025)"</span>,</span>
+<span id="cb8-167"><a href="#cb8-167"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb8-168"><a href="#cb8-168"></a>    <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb8-169"><a href="#cb8-169"></a>    <span class="at">caption =</span> <span class="st">"Source: U.S. Census Bureau, Total Construction Spending: Residential in the U.S. (via. FRED)"</span></span>
+<span id="cb8-170"><a href="#cb8-170"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-171"><a href="#cb8-171"></a>  <span class="fu">scale_x_date</span>(<span class="at">limits =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">"2020-01-01"</span>, <span class="st">"2025-01-01"</span>))) <span class="sc">+</span></span>
+<span id="cb8-172"><a href="#cb8-172"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb8-173"><a href="#cb8-173"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-174"><a href="#cb8-174"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb8-175"><a href="#cb8-175"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-176"><a href="#cb8-176"></a>  )</span>
+<span id="cb8-177"><a href="#cb8-177"></a><span class="in">```</span></span>
+<span id="cb8-178"><a href="#cb8-178"></a></span>
+<span id="cb8-181"><a href="#cb8-181"></a><span class="in">```{r}</span></span>
+<span id="cb8-182"><a href="#cb8-182"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-183"><a href="#cb8-183"></a></span>
+<span id="cb8-184"><a href="#cb8-184"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb8-185"><a href="#cb8-185"></a></span>
+<span id="cb8-186"><a href="#cb8-186"></a><span class="co"># Monthly Averages</span></span>
+<span id="cb8-187"><a href="#cb8-187"></a>df_monthly <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb8-188"><a href="#cb8-188"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-189"><a href="#cb8-189"></a>    <span class="at">date2 =</span> <span class="fu">ymd</span>(observation_date),</span>
+<span id="cb8-190"><a href="#cb8-190"></a>    <span class="at">month =</span> <span class="fu">month</span>(date2),</span>
+<span id="cb8-191"><a href="#cb8-191"></a>    <span class="at">year =</span> <span class="fu">year</span>(date2)</span>
+<span id="cb8-192"><a href="#cb8-192"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-193"><a href="#cb8-193"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span> </span>
+<span id="cb8-194"><a href="#cb8-194"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb8-195"><a href="#cb8-195"></a>  <span class="at">average =</span> <span class="fu">mean</span>(TLRESCON), <span class="at">grouping =</span> <span class="st">".drop"</span></span>
+<span id="cb8-196"><a href="#cb8-196"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb8-197"><a href="#cb8-197"></a>  <span class="fu">select</span>(month, average)</span>
+<span id="cb8-198"><a href="#cb8-198"></a></span>
+<span id="cb8-199"><a href="#cb8-199"></a><span class="fu">kable</span>(df_monthly)</span>
+<span id="cb8-200"><a href="#cb8-200"></a><span class="in">```</span></span>
+<span id="cb8-201"><a href="#cb8-201"></a></span>
+<span id="cb8-202"><a href="#cb8-202"></a><span class="fu">### Random Component</span></span>
+<span id="cb8-203"><a href="#cb8-203"></a></span>
+<span id="cb8-204"><a href="#cb8-204"></a>The random component remains relatively stable, fluctuating around the $1.00 level with noticeable variations in both directions. While the largest deviations coincide with major historical events, they are not substantially greater than other fluctuations observed throughout the period. </span>
+<span id="cb8-205"><a href="#cb8-205"></a></span>
+<span id="cb8-208"><a href="#cb8-208"></a><span class="in">```{r}</span></span>
+<span id="cb8-209"><a href="#cb8-209"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-210"><a href="#cb8-210"></a></span>
+<span id="cb8-211"><a href="#cb8-211"></a><span class="co"># Plot the Random Component</span></span>
+<span id="cb8-212"><a href="#cb8-212"></a><span class="fu">ggplot</span>(</span>
+<span id="cb8-213"><a href="#cb8-213"></a>  df_decomp,</span>
+<span id="cb8-214"><a href="#cb8-214"></a>  <span class="fu">aes</span>(<span class="at">x =</span> ym, <span class="at">y =</span> random)</span>
+<span id="cb8-215"><a href="#cb8-215"></a>) <span class="sc">+</span></span>
+<span id="cb8-216"><a href="#cb8-216"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue3"</span>, <span class="at">linewidth =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
+<span id="cb8-217"><a href="#cb8-217"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-218"><a href="#cb8-218"></a>    <span class="at">title =</span> <span class="st">"U.S. Residential Construction Spending"</span>,</span>
+<span id="cb8-219"><a href="#cb8-219"></a>    <span class="at">subtitle =</span> <span class="st">"Random Component (2002-2025)"</span>,</span>
+<span id="cb8-220"><a href="#cb8-220"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb8-221"><a href="#cb8-221"></a>    <span class="at">y =</span> <span class="st">"Millions of Dollars ($)"</span>,</span>
+<span id="cb8-222"><a href="#cb8-222"></a>    <span class="at">caption =</span> <span class="st">"Source: U.S. Census Bureau, Total Construction Spending: Residential in the U.S. (via. FRED)"</span></span>
+<span id="cb8-223"><a href="#cb8-223"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-224"><a href="#cb8-224"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb8-225"><a href="#cb8-225"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_dollar</span>()</span>
+<span id="cb8-226"><a href="#cb8-226"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-227"><a href="#cb8-227"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb8-228"><a href="#cb8-228"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-229"><a href="#cb8-229"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb8-230"><a href="#cb8-230"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-231"><a href="#cb8-231"></a>  )</span>
+<span id="cb8-232"><a href="#cb8-232"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

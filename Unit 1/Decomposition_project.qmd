@@ -140,6 +140,8 @@ ggplot(
 
 ### Seasonal Component
 
+The seasonal component appears relatively small compared to the overall scale of the data. However, the table below indicates that activity peaks in July, gradually tapering off through the winter months before rising again in the spring and summer. This pattern aligns with typical construction cycles, as adverse weather conditions in winter often slow outdoor projects. Many construction firms complete framing and exterior work before winter and shift to interior projects during the colder months.
+
 ```{r}
 #| warning: false
 
@@ -167,6 +169,8 @@ ggplot(
 ```{r}
 #| warning: false
 
+library(knitr)
+
 # Monthly Averages
 df_monthly <- df %>% 
   mutate(
@@ -174,10 +178,18 @@ df_monthly <- df %>%
     month = month(date2),
     year = year(date2)
   ) %>% 
-  group_by()
+  group_by(month) |> 
+  summarize(
+  average = mean(TLRESCON), grouping = ".drop"
+  ) |> 
+  select(month, average)
+
+kable(df_monthly)
 ```
 
 ### Random Component
+
+The random component remains relatively stable, fluctuating around the $1.00 level with noticeable variations in both directions. While the largest deviations coincide with major historical events, they are not substantially greater than other fluctuations observed throughout the period. 
 
 ```{r}
 #| warning: false
