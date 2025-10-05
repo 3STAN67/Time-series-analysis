@@ -189,7 +189,7 @@ kable(df_monthly)
 
 ### Random Component
 
-The random component remains relatively stable, fluctuating around the $1.00 level with noticeable variations in both directions. While the largest deviations coincide with major historical events, they are not substantially greater than other fluctuations observed throughout the period. 
+The random component remains relatively stable, fluctuating around the \$1.00 level with noticeable variations in both directions. While the largest deviations coincide with major historical events, they are not substantially greater than other fluctuations observed throughout the period.
 
 ```{r}
 #| warning: false
