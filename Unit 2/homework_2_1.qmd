@@ -47,7 +47,7 @@ Please research the time series. In the spaces below, give the data collection p
 <https://chat.openai.com/share/122aaad9-2be6-43ec-b58a-e1858305b401>
 
 ::: {.callout-note title="Answer" icon="false"}
-The output gap is the difference between the potential GDP and actual. Potential GDP is the level of output the economy can produce when operating at full capacity. This can be calculated with formulas that build on economic functions like the Cobb-Douglas. Real GDP measures the actual output of an economy adjusted for inflation. Nominal GDP is the total price and quantity of all sold goods and then it is adjusted for inflation to get the Real GDP. The difference between potential and real is the Output Gap. These are measured in US Dollar amounts.
+The output gap represents the difference between an economy’s potential GDP and its actual GDP. Potential GDP reflects the level of output an economy can sustain when operating at full capacity, often estimated using production functions such as the Cobb-Douglas model. Real GDP measures actual economic output adjusted for inflation, while nominal GDP measures output at current prices before adjusting for inflation. The output gap, expressed in dollar terms, indicates whether the economy is operating above or below its productive potential.
 :::
 
 #### b) **Cyclical Unemployment**
@@ -55,10 +55,10 @@ The output gap is the difference between the potential GDP and actual. Potential
 <https://chat.openai.com/share/7d6bf187-41d0-42c3-98bc-d02ea1bd5b80>
 
 ::: {.callout-note title="Answer" icon="false"}
-Unemployment is measured with a Current Population Survey census and is conducted by Census Bureau on a monthly basis. It polls about 60,000 eligible homes across different geographical places in the US. Total unemployment can be broken down into 3 different sections: frictional, structural, and cyclical. Cyclical unemployment is unemployment created by downturns in the economy. Unemployment of all types are always reported as % of the labor force.
-:::
+Unemployment is measured through the Current Population Survey (CPS), conducted monthly by the U.S. Census Bureau. The survey samples approximately 60,000 eligible households across diverse geographic regions in the United States.
 
-### Question 2 - Covariance and Correlation: Okun's Law (30) points)
+Total unemployment is typically broken down into three categories: frictional, structural, and cyclical. Cyclical unemployment arises during economic downturns when demand for goods and services declines, leading to job losses. All types of unemployment are reported as a percentage of the labor force, providing a standardized measure of labor market health.Question 2 - Covariance and Correlation: Okun's Law (30) points)
+:::
 
 Okun's Law is an empirical relationship defined as a negative correlation between the Output Gap and Cyclical Unemployment. If the economy is expanding, businesses are producing more, and unemployment tends to decrease. Conversely, during economic contractions or recessions, output shrinks, leading to an increase in unemployment.
 
@@ -172,7 +172,7 @@ These are not very plausible and rather funny. Correlation and causation can be 
 ### Rubric
 
 |  |  |
-|:--:|----|
+|:----------------------------------:|------------------------------------|
 | **Criteria** | **Ratings** |
 |  | **Complete (10)** |
 | **Question 1: Context and Measurement** | The student demonstrates a clear understanding of the context for each data series. The explanation includes details about the data collection process, unit of analysis, and the meaning of each observation. |
