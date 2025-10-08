@@ -1,0 +1,150 @@
+---
+title: "Time Series Homework: Chapter 2 Lesson 2"
+subtitle: "Tristan Farrow"
+format: 
+  html:
+    embed-resources: true
+    toc: true
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Loading R packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, 
+               tsibble, fable,
+               feasts, tsibbledata,
+               fable.prophet,
+               patchwork,
+               lubridate, 
+               rio,
+               ggplot2,
+               kableExtra
+               )
+```
+
+## Data
+
+```{r, message=FALSE}
+
+manu_inv <- rio::import("https://byuistats.github.io/timeseries/data/manu_mat_invent.csv")
+
+```
+
+::: {.callout-note title="Revisions" icon="false"}
+<!-- Delete this and put your homework revisions here. -->
+:::
+
+## Questions
+
+### Question 1 - Context and Measurement (10 points)
+
+The first part of any time series analysis is context. You cannot properly analyze data without knowing what the data is measuring. Without context, the most simple features of data can be obscure and inscrutable. This homework assignment will center around the series below.
+
+Please research the time series. In the spaces below, give the data collection process, unit of analysis, and meaning of each observation for the series.
+
+#### **Manufacturers' Materials and Supplies Inventories**
+
+<https://fred.stlouisfed.org/series/UMTMMI>
+
+::: {.callout-note title="Answer" icon="false"}
+Data Collection Process: This data is collected in the monthly internet based M3 survey that collects data from manufacturing establishments with \$500 million or more in annual shipments. This covers 89 different industry categories and companies of varying sizes. The M3 has data on manufacturers value of shipment, new orders, end-of-month order backlog, end-of-month total inventory, materials and supplies, work-in-process, and finished goods inventories.
+
+Unit of Analysis: This data is measured in millions of USD.
+
+Meaning of Observations: This data can be interpreted as the dollar value of all materials and supplies held by manufacturers at a point in time.
+:::
+
+### Question 2 - Manufacturer's Inventory: Autocorrelation and autocovariance (10 points)
+
+#### a) Please calculate the list of autocorrelation and autocovariance values for the Manufacturer's Inventory series.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+data_acf <- acf(manu_inv$manu_inv, plot = FALSE)
+data_acov <- acf(manu_inv$manu_inv, type = "covariance", plot = FALSE)
+
+data_acf
+data_acov
+
+```
+:::
+
+#### b) If autocovariance and autocorrelation are trying to evaluate a similar linear relationship across time in our series, why do we get different values for autocorrelation and autocovariance at the same lag.
+
+::: {.callout-note title="Answer" icon="false"}
+This is because autocovariance is in similar units where as autocorrelation is unit less and ranges between -1 and 1 making it easy to interpret. They both measure the relationship but on different scales.
+:::
+
+### Question 3 - Manufacturer's Inventory: Stationary (20 points)
+
+Weak stationarity is a form of stationarity important for the analysis of time series data. A time series is said to be weakly stationary if its statistical properties such as mean, variance, and autocovariance are constant over time. Here are the key components of weak stationarity:
+
+*Constant Mean:* The mean of the time series remains constant over time. This doesn't necessarily mean that the time series is centered around zero; it just implies that the average value remains the same throughout the observed period.
+
+*Constant Variance:* The variance of the time series is uniform across all time points. Like the mean, this doesn't imply that the variance must be zero, just that it doesn't change systematically with time.
+
+*Constant Autocovariance:* The autocovariance between any two observations of the time series depends only on the time lag between them and not on the absolute positions of the observations in time. This implies that the dependence structure of the time series remains constant over time.
+
+#### a) Please split the time series into two halves according to the date recorded, the earlier half of the data and the latter part of the data. Calculate the mean, variance, and autocovariance for each half. *Note:* *(it doesn't really matter if it's precisely half. An approximate middle is sufficient.)*
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+library(dplyr)
+
+df <- manu_inv 
+
+n <- nrow(df)
+midpoint <- ceiling(n / 2)
+
+fhalf <- df %>% slice(1: midpoint)
+shalf <- df %>% slice((midpoint + 1):n)
+
+cat("First Half Statistics:\n")
+cat("Mean:", mean(fhalf$manu_inv), "\n")
+cat("Variance:", var(fhalf$manu_inv), "\n")
+cat("Autocovariance:\n")
+print(acf(fhalf$manu_inv, type = "covariance", plot = FALSE))
+
+cat("\nSecond Half Statistics:\n")
+cat("Mean:", mean(shalf$manu_inv), "\n")
+cat("Variance:", var(shalf$manu_inv), "\n")
+cat("Autocovariance:\n")
+print(acf(shalf$manu_inv, type = "covariance", plot = FALSE))
+
+
+
+
+```
+:::
+
+#### b) Is there evidence to suggest that the Manufacturer's Inventory series is weakly stationary?
+
+::: {.callout-note title="Answer" icon="false"}
+No because the mean, variance, and autocovariance are not constant throughout the data set.
+:::
+
+#### c) The variance function for a times series, $\sigma^2(t)=E[(x_t-\mu)^2]$, is defined for the entire ensemble. Why is determining whether a time series has constant variance so difficult using sample data?
+
+::: {.callout-note title="Answer" icon="false"}
+Determining if a time series has a constant variance is so difficult because the actual data is only one realization of possibilities in the ensemble.
+:::
+
+### Rubric
+
+|  |  |  |
+|--------------|----------------------------|------------------------------|
+| **Criteria** | **Mastery (10)** | **Incomplete (0)** |
+| **Question 1: Context and Measurement** | The student thoroughly researches the data collection process, unit of analysis, and meaning of each observation for both the requested time series. Clear and comprehensive explanations are provided. | The student does not adequately research or provide information on the data collection process, unit of analysis, and meaning of each observation for the specified series. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3a: Autocorrelation and Covariance** | The student correctly computes the autocorrelation and autocovariance values for the Manufacturer's Inventory series using R.The R code is well-commented and structured, facilitating understanding of each step in the calculation process. Results are presented clearly. | The student attempts to compute autocorrelation and autocovariance values for the Manufacturer's Inventory series, but significant errors are present in the computations. The R code lacks clear documentation, with unclear or missing comments that hinder comprehension of the calculation process. Presentation of results may be confusing or incomplete, making it challenging to interpret the autocorrelation and autocovariance values accurately. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3b:Theoretical understanding** | The student provides a clear and accurate explanation of why different values are obtained for the same lag of the autocorrelation and autocovariance estimates. The explanation demonstrates a solid understanding of the underlying concepts. | The student attempts to explain why different values are obtained for the same lag of the autocorrelation and autocovariance estimates but does so with significant inaccuracies or lack of clarity. The explanation ~~may~~ lacks coherence or fails to address key differences between autocorrelation and autocovariance adequately. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 4a: Stationarity Calculations** | The student accurately splits the dataset into two parts and calculates the mean, variance, and autocovariance for each part using R. The R code is well-commented, providing clear explanations of the steps taken to perform the analysis. The calculated statistics are presented clearly, aiding interpretation of the results, and the student shows a solid understanding of the concepts involved in analyzing time series data. | The student attempts to split the dataset into two parts and calculate the mean, variance, and autocovariance for each part using R, but does so with significant errors or inaccuracies. The R code lacks clear and sufficient commenting, making it difficult to understand the steps taken in the analysis. The calculated statistics may be presented poorly or inaccurately, indicating a limited understanding of the concepts involved in analyzing time series data. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 4b: Evaluation** | The student assesses whether there is evidence to suggest that the Manufacturer's Inventory series is weakly stationary. The analysis is supported by clear and concise explanations, demonstrating a solid understanding of the concept of weak stationarity. | The student attempts to assess whether the Manufacturer's Inventory series is weakly stationary but does so with significant errors or lacks clarity in their analysis. There may be inaccuracies in the methodology or misinterpretation of results, indicating a limited understanding of weak stationarity |
+|  | **Mastery (10)** | **Incomplete (0)** |
+| **Question 4c: Evaluation** | The students understand the definition and application of a time series variance function to an ensemble. | The submission doesn't provide enough evidence of understanding of the definition and application of the variance function. |
+| **Total Points** | **40** |  |
