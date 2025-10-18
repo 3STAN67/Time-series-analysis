@@ -35,7 +35,7 @@ ind_prod <- rio::import("https://byuistats.github.io/timeseries/data/ind_prod_us
 ```
 
 ::: {.callout-note title="Revisions" icon="false"}
-<!-- Delete this and put your homework revisions here. -->
+I change my question 2 analysis, changed my decomposition model from additive to multiplicative and updated the analysis.
 :::
 
 ## Questions
@@ -81,10 +81,10 @@ ind_ts <- ind_prod |>
   )
 
 ind_decomp <- ind_ts |> 
-  model(feasts::classical_decomposition(ind_prod_indx, type = "add")) |> 
+  model(feasts::classical_decomposition(ind_prod_indx, type = "mult")) |> 
   components()
 
-acf(ind_ts$ind_prod_indx, plot = TRUE, type = "correlation")
+acf(ind_ts$ind_prod_indx, plot = TRUE, type = "correlation", lag.max = 100)
   
 ```
 :::
@@ -92,7 +92,7 @@ acf(ind_ts$ind_prod_indx, plot = TRUE, type = "correlation")
 ##### b) Please identify evidence of any trend or seasonal component using the correlogram. Please justify your findings.
 
 ::: {.callout-note title="Answer" icon="false"}
-The correlogram doesn't appear to show any trend or seasonal component based on the slowly decreasing trend and not having any large swings or cycles.
+The correlogram doesn't appear to show of a seasonal component as there are not spikes or repetition of patterns. The slow decrease in values over the correlogram does signify a trend. Removing the trend component may reveal a seasonal component.
 :::
 
 ### Question 3 - Total US Industrial Production: Decomposition (10 points)
@@ -115,15 +115,13 @@ autoplot(ind_decomp) +
 
 ##### b) Justify your choice of decomposition model (additive vs multiplicative)
 
-I chose to use an additive model because the seasonal component does not appear to increase in magnitude as the trend rises. Examining the random component provides a good indication of how well the trend and seasonal components capture variation in the data, and it performs reasonably well, remaining centered around zero for most of the period. Although there are a few large deviations, these could correspond to major economic events such as the 2008 financial crisis and the 2020 COVID-19 pandemic.
+The multiplicative model does have a greater variation in its random component which we have used a indicator goodness of fit, however the data does have an increasing trend and increasing variation in the seasonal component. Even though the random component may have more variation the multiplicative model better represents the data by capturing historical events that did impact industrial production.
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
-ind_sub <- ind_prod |> 
-  mutate(date2 = mdy(date)) |> 
-  filter(date2 > "1980-01-01")
+#| warning: false
 
-ggplot(ind_sub, aes(x = date2, y = ind_prod_indx)) +
+ggplot(ind_decomp, aes(x = year_month, y = random)) +
   geom_line() +
   labs(
     title = "US Total Industrial Production Index (1980-2025)",
@@ -150,7 +148,7 @@ acf(ind_decomp$random |> na.omit(), plot = TRUE, type = "correlation")
 ##### b) Please interpret the correlogram of the random component of the US Industrial Production Index. Include descriptions of the statistical and practical significance of the results. Be careful to justify the cases when a statistically significant correlation is not practically significant.
 
 ::: {.callout-note title="Answer" icon="false"}
-The correlogram of the random component shows roughly 15 statistically significant bars. Many of these significant lags occur at intervals of about three months, indicating a possible quarterly seasonal correlation. While most of the negative seasonal bars are relatively small, the positive ones appear more substantial, reaching values around 0.4, implying they may hold practical significance..
+The correlogram of the random component shows statistically significant bars. Many of these significant lags occur at intervals of about 5 months, indicating a possible seasonal correlation. While most of the positive seasonal bars are relatively small, the negative ones appear more substantial, reaching values around 0.4, implying they may hold practical significance..
 :::
 
 ### Question 5 - US Industrial Production Index: Introspection (20 points)

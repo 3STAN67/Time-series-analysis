@@ -1,0 +1,152 @@
+---
+title: "Time Series Homework: Chapter 3 Lesson 1"
+subtitle: "Tristan Farrow"
+format: 
+  html:
+    embed-resources: true
+    toc: true
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Loading R packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, 
+               tsibble, fable,
+               feasts, tsibbledata,
+               fable.prophet,
+               patchwork,
+               lubridate, 
+               rio,
+               ggplot2,
+               kableExtra
+               )
+```
+
+## Data
+
+```{r, message=FALSE}
+
+manu <- rio::import("https://byuistats.github.io/timeseries/data/constructionequip_manu_orders_shipments.csv")
+
+```
+
+## Questions
+
+### Question 1 - Context and Measurement (10 points)
+
+The first part of any time series analysis is context. You cannot properly analyze data without knowing what the data is measuring. Without context, the most simple features of data can be obscure and inscrutable. This homework assignment will center around the series below.
+
+Please research the time series. In the spaces below, give the data collection process, unit of analysis, and meaning of each observation for the series.
+
+##### a) **Construction Equipment Manufacturing Orders and Shipments**
+
+<https://fred.stlouisfed.org/graph/?g=1f4dN>
+
+::: {.callout-note title="Answer" icon="false"}
+This time series includes Manufacturers' New Orders: Construction Machinery (A33CNO) and Manufacturers' Value of Shipments: Construction Machinery (A33CVS)
+
+Data Collection:
+
+Both of these data sets are collected by the Census Bureau through their M3 survey. The M3 has between 5,000-6,000 manufacturing establishments around the U.S. that participate monthly through mail, phone, and electronic reporting.
+
+Unit of Analysis:
+
+A33CNO - The value in millions of USD of new purchase orders received during the month by construction machinery manufacturers.
+
+A33CVS - The value is millions of USD of construction machinery actually shipped during the month.
+
+Meaning of Observations:
+
+A33CNO represents a demand for the future production of construction machinery and is a leading indicator for manufacturing activity in the sector.
+
+A33CVS measures the realized production wihtin that month and reflects how much of the new order backlog was converted into output.
+:::
+
+### Question 2 - Construction Equipment Manufacturing: Graphical Analysis (15 points)
+
+##### a) Please plot a correlogram of the random components of the New Orders and Value of Shipments for the Construction Equipment Manufacturing data. Include both plots in the same illustration as exemplified in the Figure 5 of Chapter 3 Lesson 1.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+# Create a time series of the data
+manu_ts <- manu %>% 
+  mutate(
+    date2 = mdy(date),
+    year_mon = yearmonth(date2)
+  ) %>% 
+  select(year_mon, constructionequip_ord, constructionequip_ship) %>% 
+  tsibble(index = year_mon)
+
+# Create the first decomp model
+order_decomp <- manu_ts %>% 
+  model(feasts::classical_decomposition(constructionequip_ord, type = "mult")) %>% 
+  components() %>% 
+  select(year_mon, random) %>% 
+  rename(random_order = random)
+
+# Create the second decomp model
+ship_decomp <- manu_ts %>% 
+  model(feasts::classical_decomposition(constructionequip_ship, type = "mult")) %>% 
+  components() %>% 
+  select(year_mon, random) %>% 
+  rename(random_ship = random)
+
+acf_order <- ACF(order_decomp, y = random_order) %>% 
+  autoplot() + 
+  labs(title = "ACF of Random Component of Construction Machinery Orders")
+
+acf_ship <- ACF(ship_decomp, y = random_ship) %>% 
+  autoplot() +
+  labs(title = "ACF of Random Component of Construction Machinery Shipments")
+
+acf_order / acf_ship
+```
+:::
+
+b)  Interpret and analyze the correlogram of the New Orders and Value of Shipments series.
+
+::: {.callout-note title="Answer" icon="false"}
+The order correlogram does not appear to have seasonal or trend components that are affecting the random component. There are 3 bars that statistically significant could be within the 5% of expected values to fall outside of the confidence interval and may not be practically significant. The shipment correlogram could have some seasonal component in the random.
+:::
+
+### Question 3 - Construction Equipment Manufacturing: Cross-correlation (30 points)
+
+##### a) Please plot a cross-correlogram of the New Orders and Value of Shipments series.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+random_join <- order_decomp %>% 
+  right_join(ship_decomp, by = join_by(year_mon))
+
+random_join %>% 
+  CCF(y = random_ship, x = random_order) %>% 
+  autoplot() +
+  labs(title = "CCF for Random Component of Construction Machinery Orders (x) and Shipments (y)")
+
+```
+:::
+
+##### b) Please interpret the cross-correlogram of the New Orders and Value of Shipments series. Include descriptions of the statistical and practical significance of the results.
+
+::: {.callout-note title="Answer" icon="false"}
+The lags closed to zero appear to be practically significant and indicate that the level of orders is a leading a indicator shipments like would be expected.
+:::
+
+### Rubric
+
+|  |  |  |
+|--------------|------------------------------|-----------------------------|
+| **Criteria** | **Mastery (10)** | **Incomplete (0)** |
+| **Question 1: Context and Measurement** | The student thoroughly researches the data collection process, unit of analysis, and meaning of each observation for both the requested time series. Clear and comprehensive explanations are provided. | The student does not adequately research or provide information on the data collection process, unit of analysis, and meaning of each observation for the specified series. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 2a: Correlograms** | The student plots a correlogram of the random components of the New Orders and Value of Shipments for the Construction Equipment Manufacturing data using R. The correlogram includes both plots in the same illustration, similar to Figure 5 of Chapter 3 Lesson 1, allowing for easy comparison between the two series. The student correctly uses labels. The R code is well-commented, providing clear explanations of each step in the plotting process, and adheres to best practices for visualization in time series analysis. | The correlogram may be missing one or both plots, or the plots may not be correctly aligned for comparison. There may be errors in identifying or labeling the autocorrelation values, making it challenging to interpret the results accurately. The R code may lack sufficient commenting or follow best practices for visualization, hindering comprehension of the plotting process. |
+|  | **Mastery (10)** | **Incomplete (0)** |
+| **Question 2b: Interpretation and Analysis** | They accurately identify and discuss significant autocorrelation values at various lags, indicating the presence of temporal dependencies within each series. Additionally, the student compares and contrasts the correlograms of the two series, highlighting similarities and differences in their autocorrelation patterns. The analysis includes insights into the potential underlying factors driving the observed autocorrelation patterns, demonstrating a deep understanding of time series analysis concepts and their practical implications. | The student attempts to interpret and analyze the correlogram for the New Orders and Value of Shipments series but encounters issues with accuracy, clarity, or completeness. Their discussion may lack depth or coherence, with unclear or erroneous interpretations of significant autocorrelation values. Additionally, the comparison between the correlograms of the two series may be vague or missing key points, indicating a limited understanding of time series analysis concepts. Overall, the student's analysis may lack sufficient detail or insight, suggesting areas for improvement in their understanding of autocorrelation analysis and its practical implications in time series analysis. |
+|  | **Mastery (10)** | **Incomplete (0)** |
+| **Question 3a: Cross-correlogram** | The student accurately plots a cross-correlogram of the New Orders and Value of Shipments series using R. The plot includes clear labels and titles allowing for easy interpretation of the results. The R code is well-commented, providing clear explanations of each step in the cross-correlation analysis and plot generation process. | The student attempts to plot a cross-correlogram of the New Orders and Value of Shipments series in R but encounters issues with accuracy, clarity, or completeness. The plot may lack clear labels and titles, making it challenging to interpret the results accurately. Additionally, the R code may lack sufficient commenting or clarity, hindering comprehension of the analysis process. Overall, the student's performance falls short of expectations, indicating a need for improvement in plotting cross-correlograms, labeling plots effectively, and providing clear explanations in R code. |
+|  | **Mastery (20)** | **Incomplete (0)** |
+| **Question 3b: Interpretation and Analysis** | They accurately identify and discuss significant cross-correlation values at various lags, indicating the strength and direction of the relationship between the two series. Additionally, the student includes a thoughtful discussion of the statistical significance of the results, highlighting how cross-correlation coefficients measure the linear relationship between the series and whether the observed correlations are statistically significant. Furthermore, the student discusses the practical significance of the results, addressing the real-world relevance or impact of the observed relationships, and how they may inform decision-making or forecasting in the context of construction equipment manufacturing. | The student attempts to interpret the cross-correlogram for the New Orders and Value of Shipments series but encounters issues with accuracy, clarity, or completeness. Their discussion may lack depth or coherence, with unclear or erroneous interpretations of significant cross-correlation values. Additionally, the discussion of statistical and practical significance may be vague or missing key points, indicating a limited understanding of these concepts. Overall, the student's analysis may lack sufficient detail or insight, suggesting areas for improvement in their understanding of cross-correlation analysis and its practical implications in time series analysis. |
+| **Total Points** | **55** |  |
