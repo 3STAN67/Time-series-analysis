@@ -1,0 +1,42 @@
+---
+title: "3-1 Classwork"
+output: html_document
+---
+
+```{r}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, 
+               tsibble, fable,
+               feasts, tsibbledata,
+               fable.prophet,
+               patchwork,
+               lubridate, 
+               rio,
+               ggplot2,
+               kabl)
+```
+
+
+```{r}
+# read and clean the data
+housing <- rio::import("https://byuistats.github.io/timeseries/data/housing.csv") |>
+  rename(
+    permits = permits_single_family,
+    starts = starts_single_family,
+    completions = completions_single_family
+  ) |>
+  mutate(date = my(month)) |>
+  mutate(month = yearmonth(date)) |>
+  dplyr::select(month, permits, starts, completions)  |>
+  as_tsibble(index = month)
+
+autoplot(housing, .vars = starts) +
+  geom_line(data = housing, aes(x = month, y = completions), color = "#E69F00") +
+  labs(
+    x = "Month",
+    y = "Housing Units (Thousands)",
+    title = "U.S. Single-Family Housing Starts and Completions"
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
