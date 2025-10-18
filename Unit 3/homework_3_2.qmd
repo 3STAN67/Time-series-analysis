@@ -24,6 +24,8 @@ pacman::p_load(tidyverse,
                )
 ```
 
+I fixed some charts and code that wasn't done very well and updated the last questions reponses.
+
 ## Data
 
 ```{r, message=FALSE}
@@ -124,12 +126,10 @@ ggplot(mortality, aes(x = year)) +
 
 ggplot(mortality, aes(x = year)) +
   geom_line(aes(y = `mort_rate_per_100,000`, color = "Observed"), linewidth = 1.2) +
-  geom_line(aes(y = ETS_fit, color = "Model 1"), linewidth = 1.2) +
   geom_line(aes(y = model_2, color = "Model 2"), linewidth = 1.2) +
   scale_color_manual(values = c("Observed" = "firebrick", "Model 1" = "steelblue", "Model 2" = "lightgray")) +
   labs(
-    title = 'Mortality Rate per 100,000 in US',
-    subtitle = paste0("ETS simple exponential smoothing, aphla =", round(alpha, 3))
+    title = 'Mortality Rate per 100,000 in US'
   ) +
   theme_minimal() +
   theme(
@@ -146,10 +146,8 @@ ggplot(mortality, aes(x = year)) +
 
 ggplot(mortality, aes(x = year)) +
   geom_line(aes(y = `mort_rate_per_100,000`, color = "Observed"), linewidth = 1.2) +
-  geom_line(aes(y = ETS_fit, color = "Model 1"), linewidth = 1.2) +
-  geom_line(aes(y = model_2, color = "Model 2"), linewidth = 1.2) +
   geom_line(aes(y = model_3, color = "Model 3"), linewidth = 1.2) +
-  scale_color_manual(values = c("Observed" = "firebrick", "Model 1" = "steelblue", "Model 2" = "lightgray")) +
+  scale_color_manual(values = c("Observed" = "firebrick", "Model 3" = "green2")) +
   labs(
     title = 'Mortality Rate per 100,000 in US',
     subtitle = paste0("ETS simple exponential smoothing, aphla =", round(alpha, 3))
@@ -186,8 +184,8 @@ mortality <- mortality |>
   )
 
 mortality |>
-  select(year, excess) |> 
-  kable(digits = 3, caption = "ETS Model Fit Statistics Across Alpha Values") |>
+  select(year, `mort_rate_per_100,000`, model_2, model_3) |> 
+  kable(digits = 3, caption ="ETS Model Fit Statistics Across Alpha Values") |>
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
@@ -198,19 +196,19 @@ mortality |>
 ::: {.callout-note title="Answer" icon="false"}
 Excess mortality measures how many more people died in a given year than we would have expected based on historical trends. In our model, we estimated what the mortality rate *should have been* if past patterns had continued smoothly over time. The ‘excess’ is simply the difference between that expected rate and the actual rate we observed.
 
-If the number is positive, it means more people died than expected — perhaps because of a major event like a pandemic, heat wave, or natural disaster. If it’s negative, it means fewer people died than expected, which could reflect improvements in healthcare or safety
+If the number is positive, it means more people died than expected, perhaps because of a major event like a pandemic, heat wave, or natural disaster. If it’s negative, it means fewer people died than expected, which could reflect improvements in healthcare or safety
 :::
 
 ##### c) Which excess mortality rate estimate do you think is correct? Some commentators would suggest you are choosing the parameters to defend your political goals, not to conduct a scientific analysis. Please comment on the difficulty of choosing parameter values to estimate the death toll of Covid-19.
 
 ::: {.callout-note title="Answer" icon="false"}
-There may not be a exactly correct weight or parameter but the context of the data has to be considered. From this we can attempt to best choose parameters that reflect the real world.
+Using an alpha of 0.2 provides a good balance between giving weight to past data and adjusting for more recent changes. In time series analysis, choosing parameters like alpha can be difficult because it involves judgment, analysts must decide how much importance to place on historical trends versus new information. These choices can vary depending on one’s understanding of the data and the purpose of the analysis.
 :::
 
 ### Rubric
 
 |  |  |  |
-|--------------|--------------------|--------------------------------------|
+|-----------------|-------------------|------------------------------------|
 | **Criteria** | **Mastery (10)** | **Incomplete (0)** |
 | **Question 1: Context and Measurement** | The student thoroughly researches the data collection process, unit of analysis, and meaning of each observation for both the requested time series. Clear and comprehensive explanations are provided. | The student does not adequately research or provide information on the data collection process, unit of analysis, and meaning of each observation for the specified series. |
 |  | **Mastery (5)** | **Incomplete (0)** |
