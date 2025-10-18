@@ -47,7 +47,7 @@ Please research the time series. In the spaces below, give the data collection p
 Note: The data is self-explanatory, don't get lost in the documentation page.
 
 ::: {.callout-note title="Answer" icon="false"}
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+The US mortality rate refers to the number of deaths in the population, typically expressed as deaths per 1,000 people per year.
 :::
 
 ### Question 2 - US Mortality Rate: Visualization (30 points)
@@ -57,7 +57,20 @@ Note: The data is self-explanatory, don't get lost in the documentation page.
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
 
-
+ggplot(
+  data = mortality,
+  aes(x = year, y = `mort_rate_per_100,000`)
+) +
+  geom_line() +
+  labs(
+    title = "U.S. Mortality Rate",
+    x = "Year",
+    y = "Count per 100,000"
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
 
 
 ```
@@ -67,6 +80,37 @@ Note: The data is self-explanatory, don't get lost in the documentation page.
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
+
+library(forecast)
+
+mortality <- mortality |> arrange(year)
+
+
+y <- ts(mortality$`mort_rate_per_100,000`, start = min(mortality$year), frequency = 1)
+
+fit_one <- ets(y, model = "ANN")
+fit_two <- ets(y, model = "ANN", alpha = 0.2)
+fit_three <- ets(y, model = "ANN", alpha = 1/54)
+
+alpha <- fit_one$par["alpha"]
+
+mortality$ETS_fit <- as.numeric(fitted(fit_one))
+mortality$model_2 <- as.numeric(fitted(fit_two))
+mortality$model_3 <- as.numeric(fitted(fit_three))
+
+ggplot(mortality, aes(x = year)) +
+  geom_line(aes(y = `mort_rate_per_100,000`, color = "observed"), linewidth = 1.2) +
+  geom_line(aes(y = ETS_fit, color = "ETS_fit"), linewidth = 1.2) +
+  scale_color_manual(values = c("observed" = "firebrick", "ETS (ANN) fit" = "steelblue")) +
+  labs(
+    title = 'Mortality Rate per 100,000 in US',
+    subtitle = paste0("ETS simple exponential smoothing, aphla =", round(alpha, 3))
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
 
 
 
@@ -78,7 +122,20 @@ Note: The data is self-explanatory, don't get lost in the documentation page.
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
 
-
+ggplot(mortality, aes(x = year)) +
+  geom_line(aes(y = `mort_rate_per_100,000`, color = "Observed"), linewidth = 1.2) +
+  geom_line(aes(y = ETS_fit, color = "Model 1"), linewidth = 1.2) +
+  geom_line(aes(y = model_2, color = "Model 2"), linewidth = 1.2) +
+  scale_color_manual(values = c("Observed" = "firebrick", "Model 1" = "steelblue", "Model 2" = "lightgray")) +
+  labs(
+    title = 'Mortality Rate per 100,000 in US',
+    subtitle = paste0("ETS simple exponential smoothing, aphla =", round(alpha, 3))
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
 ```
 :::
 
@@ -87,7 +144,21 @@ Note: The data is self-explanatory, don't get lost in the documentation page.
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
 
-
+ggplot(mortality, aes(x = year)) +
+  geom_line(aes(y = `mort_rate_per_100,000`, color = "Observed"), linewidth = 1.2) +
+  geom_line(aes(y = ETS_fit, color = "Model 1"), linewidth = 1.2) +
+  geom_line(aes(y = model_2, color = "Model 2"), linewidth = 1.2) +
+  geom_line(aes(y = model_3, color = "Model 3"), linewidth = 1.2) +
+  scale_color_manual(values = c("Observed" = "firebrick", "Model 1" = "steelblue", "Model 2" = "lightgray")) +
+  labs(
+    title = 'Mortality Rate per 100,000 in US',
+    subtitle = paste0("ETS simple exponential smoothing, aphla =", round(alpha, 3))
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
 
 ```
 :::
@@ -95,7 +166,7 @@ Note: The data is self-explanatory, don't get lost in the documentation page.
 ##### d) Which of the smoothing parameter values you tried before work best for the series? Justify your answer.
 
 ::: {.callout-note title="Answer" icon="false"}
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+The first model was the closest to the observed values. As the alpha grew it became less and less like the observed.
 :::
 
 ### Question 5 - US Mortality Rate: Excess Mortality (30 points)
@@ -107,7 +178,17 @@ The jump at the last two years of the US Mortality Rate series is clearly the ef
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
 
+library(knitr)
 
+mortality <- mortality |> 
+  mutate(
+    excess = `mort_rate_per_100,000` - model_2
+  )
+
+mortality |>
+  select(year, excess) |> 
+  kable(digits = 3, caption = "ETS Model Fit Statistics Across Alpha Values") |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 :::
@@ -115,35 +196,37 @@ The jump at the last two years of the US Mortality Rate series is clearly the ef
 ##### b) What is the meaning of excess mortality as you calculated it? Please explain it to a general audience, as if you were being interviewed in a national news show.
 
 ::: {.callout-note title="Answer" icon="false"}
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+Excess mortality measures how many more people died in a given year than we would have expected based on historical trends. In our model, we estimated what the mortality rate *should have been* if past patterns had continued smoothly over time. The ‘excess’ is simply the difference between that expected rate and the actual rate we observed.
+
+If the number is positive, it means more people died than expected — perhaps because of a major event like a pandemic, heat wave, or natural disaster. If it’s negative, it means fewer people died than expected, which could reflect improvements in healthcare or safety
 :::
 
 ##### c) Which excess mortality rate estimate do you think is correct? Some commentators would suggest you are choosing the parameters to defend your political goals, not to conduct a scientific analysis. Please comment on the difficulty of choosing parameter values to estimate the death toll of Covid-19.
 
 ::: {.callout-note title="Answer" icon="false"}
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+There may not be a exactly correct weight or parameter but the context of the data has to be considered. From this we can attempt to best choose parameters that reflect the real world.
 :::
 
 ### Rubric
 
-|                                                               |                                                                                                                                                                                                                                                                                                                                                                                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|---------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Criteria**                                                  | **Mastery (10)**                                                                                                                                                                                                                                                                                                                                                                    | **Incomplete (0)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Question 1: Context and Measurement**                       | The student thoroughly researches the data collection process, unit of analysis, and meaning of each observation for both the requested time series. Clear and comprehensive explanations are provided.                                                                                                                                                                             | The student does not adequately research or provide information on the data collection process, unit of analysis, and meaning of each observation for the specified series.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-|                                                               | **Mastery (5)**                                                                                                                                                                                                                                                                                                                                                                     | **Incomplete (0)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Question 2a: Mortality Plot**                               | The student accurately plots the US Mortality Rate series in R, ensuring clear labeling and a descriptive title for easy interpretation. The visualization effectively presents the data with distinguishable points or lines and appropriate formatting. Additionally, the R code is well-commented, providing clear explanations of each step and maintaining readability.        | The student encounters challenges in plotting the US Mortality Rate series in R. The plot may lack essential labels or a descriptive title, making it difficult to interpret. Additionally, the visualization might be unclear or cluttered, and the R code may lack sufficient comments, hindering understanding of the process. Overall, improvement is needed in effectively plotting time series data in R.                                                                                                                                                                                                                                                          |
-|                                                               | **Mastery (5)**                                                                                                                                                                                                                                                                                                                                                                     | **Incomplete (0)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Question 2b: Smoothing SS1PE**                              | Students use R to compute exponential smoothing for modeling the US Mortality Rate series. Their R code is well-commented, providing clear explanations for each step of the process, ensuring transparency in the computational process.                                                                                                                                           | Students may encounter challenges in implementing exponential smoothing in R, resulting in incomplete or ineffective computations. Their R code might lack sufficient comments, hindering clarity in understanding the computational process.                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|                                                               | **Mastery (5)**                                                                                                                                                                                                                                                                                                                                                                     | **Incomplete (0)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Question 2c: Smoothing a=0.2**                              | Students employ R to repeat the modeling of the US Mortality Rate series using a specified smoothing parameter value of alpha=0.2. Their R code is well-commented, providing clear explanations for each step of the process, ensuring transparency in the computational process.                                                                                                   | Students may encounter challenges in implementing exponential smoothing in R, resulting in incomplete or ineffective computations. Their R code might lack sufficient comments, hindering clarity in understanding the computational process.                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|                                                               | **Mastery (5)**                                                                                                                                                                                                                                                                                                                                                                     | **Incomplete (0)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Question 2d: Smoothing a=1/n**                              | Students employ R to repeat the modeling of the US Mortality Rate series using a specified smoothing parameter value of alpha=1/n. Their R code is well-commented, providing clear explanations for each step of the process, ensuring transparency in the computational process.                                                                                                   | Students may encounter challenges in implementing exponential smoothing in R, resulting in incomplete or ineffective computations. Their R code might lack sufficient comments, hindering clarity in understanding the computational process.                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|                                                               | **Mastery (10)**                                                                                                                                                                                                                                                                                                                                                                    | **Incomplete (0)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Question 2d: Evaluation of Parameter Choice**               | Students justify their choice of parameter in the context of the underlying factors affecting US Mortality Rates evident in the data. The students evidence their understanding of the implications of the values in the smoothing parameter. Students show they have done some background research into the data to answer the question.                                           | Students fail to adequately justify their choice of parameter in relation to the underlying factors affecting US Mortality Rates evident in the data. They may lack evidence of understanding the implications of the values in the smoothing parameter or fail to demonstrate how these implications relate to the context of the data. Additionally, they may show limited evidence of background research into the data to support their justification, indicating a lack of depth in their analysis.                                                                                                                                                                 |
-|                                                               | **Mastery (10)**                                                                                                                                                                                                                                                                                                                                                                    | **Incomplete (0)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Question 3a: Excess MortalityTable**                        | Students accurately calculate the excess mortality rate during 2020 and 2021 using the smoothing parameter values employed in the previous question. They present their results in table, clearly displaying the excess mortality rate for each year alongside the corresponding smoothing parameter values. The table is well-labeled and easy to interpret.                       | Students demonstrate inaccuracies in calculating the excess mortality rate during 2020 and 2021. Their presentation of the results in a table may lack clarity and professionalism, with issues such as unclear labeling, inconsistent formatting, or difficulty in interpreting the information provided. Additionally, they may overlook important details or fail to include all necessary information in the table, making it challenging for readers to understand the table.                                                                                                                                                                                       |
-|                                                               | **Mastery (10)**                                                                                                                                                                                                                                                                                                                                                                    | **Incomplete (0)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Question 3b: Excess Mortality**                             | Explanations effectively convey the meaning of excess mortality to a general audience, avoiding technical terms and providing a clear, accessible description. They define excess mortality as the number of deaths observed during a specific period compared to what would be expected based on historical data.                                                                  | Responses may struggle to explain excess mortality clearly to a general audience, potentially using technical language or lacking coherence. They may fail to provide relatable examples or context, making it difficult for the audience to understand the concept and its significance.                                                                                                                                                                                                                                                                                                                                                                                |
-|                                                               | **Mastery (10)**                                                                                                                                                                                                                                                                                                                                                                    | **Incomplete (0)**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|  |  |  |
+|--------------|--------------------|--------------------------------------|
+| **Criteria** | **Mastery (10)** | **Incomplete (0)** |
+| **Question 1: Context and Measurement** | The student thoroughly researches the data collection process, unit of analysis, and meaning of each observation for both the requested time series. Clear and comprehensive explanations are provided. | The student does not adequately research or provide information on the data collection process, unit of analysis, and meaning of each observation for the specified series. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 2a: Mortality Plot** | The student accurately plots the US Mortality Rate series in R, ensuring clear labeling and a descriptive title for easy interpretation. The visualization effectively presents the data with distinguishable points or lines and appropriate formatting. Additionally, the R code is well-commented, providing clear explanations of each step and maintaining readability. | The student encounters challenges in plotting the US Mortality Rate series in R. The plot may lack essential labels or a descriptive title, making it difficult to interpret. Additionally, the visualization might be unclear or cluttered, and the R code may lack sufficient comments, hindering understanding of the process. Overall, improvement is needed in effectively plotting time series data in R. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 2b: Smoothing SS1PE** | Students use R to compute exponential smoothing for modeling the US Mortality Rate series. Their R code is well-commented, providing clear explanations for each step of the process, ensuring transparency in the computational process. | Students may encounter challenges in implementing exponential smoothing in R, resulting in incomplete or ineffective computations. Their R code might lack sufficient comments, hindering clarity in understanding the computational process. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 2c: Smoothing a=0.2** | Students employ R to repeat the modeling of the US Mortality Rate series using a specified smoothing parameter value of alpha=0.2. Their R code is well-commented, providing clear explanations for each step of the process, ensuring transparency in the computational process. | Students may encounter challenges in implementing exponential smoothing in R, resulting in incomplete or ineffective computations. Their R code might lack sufficient comments, hindering clarity in understanding the computational process. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 2d: Smoothing a=1/n** | Students employ R to repeat the modeling of the US Mortality Rate series using a specified smoothing parameter value of alpha=1/n. Their R code is well-commented, providing clear explanations for each step of the process, ensuring transparency in the computational process. | Students may encounter challenges in implementing exponential smoothing in R, resulting in incomplete or ineffective computations. Their R code might lack sufficient comments, hindering clarity in understanding the computational process. |
+|  | **Mastery (10)** | **Incomplete (0)** |
+| **Question 2d: Evaluation of Parameter Choice** | Students justify their choice of parameter in the context of the underlying factors affecting US Mortality Rates evident in the data. The students evidence their understanding of the implications of the values in the smoothing parameter. Students show they have done some background research into the data to answer the question. | Students fail to adequately justify their choice of parameter in relation to the underlying factors affecting US Mortality Rates evident in the data. They may lack evidence of understanding the implications of the values in the smoothing parameter or fail to demonstrate how these implications relate to the context of the data. Additionally, they may show limited evidence of background research into the data to support their justification, indicating a lack of depth in their analysis. |
+|  | **Mastery (10)** | **Incomplete (0)** |
+| **Question 3a: Excess MortalityTable** | Students accurately calculate the excess mortality rate during 2020 and 2021 using the smoothing parameter values employed in the previous question. They present their results in table, clearly displaying the excess mortality rate for each year alongside the corresponding smoothing parameter values. The table is well-labeled and easy to interpret. | Students demonstrate inaccuracies in calculating the excess mortality rate during 2020 and 2021. Their presentation of the results in a table may lack clarity and professionalism, with issues such as unclear labeling, inconsistent formatting, or difficulty in interpreting the information provided. Additionally, they may overlook important details or fail to include all necessary information in the table, making it challenging for readers to understand the table. |
+|  | **Mastery (10)** | **Incomplete (0)** |
+| **Question 3b: Excess Mortality** | Explanations effectively convey the meaning of excess mortality to a general audience, avoiding technical terms and providing a clear, accessible description. They define excess mortality as the number of deaths observed during a specific period compared to what would be expected based on historical data. | Responses may struggle to explain excess mortality clearly to a general audience, potentially using technical language or lacking coherence. They may fail to provide relatable examples or context, making it difficult for the audience to understand the concept and its significance. |
+|  | **Mastery (10)** | **Incomplete (0)** |
 | **Question 3c: Evaluation of assumptions used for inference** | Responses address the challenge of selecting parameter values to make inference in time series. They provide a comprehensive analysis, considering factors like modeling assumptions, and methodological variations that influence parameter selection. Explanations highlight the need of transparent reporting to ensure robust and reliable estimates in professional discourse. | Below expectations, responses may lack depth or clarity in addressing the challenge of selecting parameter values for making inference in time series. They may overlook key factors influencing parameter selection, such as data quality or specific characteristics of the time series data. Additionally, they may not effectively consider the impact of modeling assumptions or methodological variations on parameter selection. Furthermore, they may fail to emphasize the importance of transparent reporting in ensuring the reliability and validity of estimates, potentially resulting in a lack of confidence in the conclusions drawn from the analysis. |
-| **Total Points**                                              | **70**                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Total Points** | **70** |  |
