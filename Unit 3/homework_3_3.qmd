@@ -81,7 +81,13 @@ This series imported above has not been seasonally adjusted.
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
+df_ts <- df |> 
+  select(yearmonth, Deaths) |> 
+  tsibble(index = yearmonth)
 
+hw_add <- HoltWinters(df_ts, seasonal = 'additive')
+
+plot(hw_add)
 
 ```
 :::
@@ -89,7 +95,7 @@ This series imported above has not been seasonally adjusted.
 ##### b) What parameters values did you choose for $\alpha$, $\beta$, and $\gamma$. Justify your choice.
 
 ::: {.callout-note title="Answer" icon="false"}
-
+I did not estimate the parameters but allowed R to automatically estimate the optiam aphla, beta, and gamma. It does this by minimizing the sum of squared errors. 
 
 :::
 
@@ -98,7 +104,11 @@ This series imported above has not been seasonally adjusted.
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
 
+library(forecast)
 
+hw_forecast <- forecast(hw_add, h = 24)
+
+plot(hw_forecast)
 
 
 ```
