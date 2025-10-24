@@ -23,6 +23,10 @@ pacman::p_load(tidyverse,
                )
 ```
 
+::: {.callout-note title="Revision" incon="false"}
+I changed the code to more align with the answer key and updated my responses to the questions. I also finished the last question. 
+:::
+
 ## Data
 
 ```{r, message=FALSE}
@@ -70,7 +74,7 @@ Data Collection: This data is derived from death certificates filed in the 50 U.
 
 Unit of Analysis: The unit of analysis is the number of deaths from a cause.
 
-Meaning of Observation: Each observation is an aggregation of the number of deaths from a cause at a given period of time. 
+Meaning of Observation: Each observation is an aggregation of the number of deaths from a cause at a given period of time.
 :::
 
 ### Question 2 - Additive Holt-Winters Forecasting (30 points)
@@ -81,13 +85,21 @@ This series imported above has not been seasonally adjusted.
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
-df_ts <- df |> 
-  select(yearmonth, Deaths) |> 
-  tsibble(index = yearmonth)
+illness_ts <- illness |> 
+  as_tsibble()
 
-hw_add <- HoltWinters(df_ts, seasonal = 'additive')
+ggplot(illness_ts, aes(x = yearmonth, y = `Deaths per 100000`)) +
+  geom_line() +
+  theme_bw()
 
-plot(hw_add)
+illness_hw <- illness_ts |> 
+  model(Additive = ETS(`Deaths per 100000` ~
+                         trend("A", alpha = 0.15, beta = 0.0005) +
+                         error("A") +
+                         season("A", gamma = 0.01),
+                       opt_crit = "amse", nmse = 1
+                         ))
+report(illness_hw)
 
 ```
 :::
@@ -95,7 +107,12 @@ plot(hw_add)
 ##### b) What parameters values did you choose for $\alpha$, $\beta$, and $\gamma$. Justify your choice.
 
 ::: {.callout-note title="Answer" icon="false"}
-I did not estimate the parameters but allowed R to automatically estimate the optiam aphla, beta, and gamma. It does this by minimizing the sum of squared errors. 
+Alpha - 0.15
+A small alpha was used to smooth out short-term fluctuations and give weight to larger trends.
+Beta - 0.0005
+A small beta was used on the basis that mortality rate is expected to be consistent and change gradually over time. 
+Gamma - 0.01
+The small gamma was used as seasonal patterns are consistent and evolve slowly.
 
 :::
 
@@ -106,9 +123,15 @@ I did not estimate the parameters but allowed R to automatically estimate the op
 
 library(forecast)
 
-hw_forecast <- forecast(hw_add, h = 24)
-
-plot(hw_forecast)
+illness_hw |> 
+  forecast(h = "24 months") |> 
+  autoplot(illness_ts, level = 95) + 
+  geom_line(aes(y = .fitted, color = "Fitted"),
+            data = augment(illness_hw)) + 
+  scale_color_discrete(name = "") +
+  theme_bw() +
+  labs(x = "Date") +
+  theme(legend.position = "bottom")
 
 
 ```
@@ -124,13 +147,30 @@ illness_curent <- df |> left_join(df2, by="yearmonth") |>
   mutate(`Deaths per 100000` = (Deaths/POPTHM)*100000) |>
   select(-c(observation_date)) 
 
+forecast_data <- illness_hw |>
+  forecast(h = "24 months")
+
+illness_curent_ts <- illness_curent |>
+  as_tsibble()
+
+autoplot(forecast_data, illness_ts, level = 95) +
+  geom_line(data = illness_curent_ts, 
+            aes(x = yearmonth, y = `Deaths per 100000`, color = "Actual")) +
+  geom_line(aes(y = .fitted, color = "Fitted"),
+            data = augment(illness_hw)) +
+  scale_color_manual(values = c("Fitted" = "orange", "Actual" = "black")) +
+  labs(x = "Date", y = "Deaths per 100,000", color = "") +
+  theme_bw() +
+  theme(legend.position = "bottom")
 ```
+
+The forecast estimated higher peaks than the actual result. A gray rhino is a highly probable, high impact event that is often ignored unitl it occurs like the pandemic. Since the model relies on continuity and historical patterns and would not be able to predict a sudden or abrupt event. Forecasting is probabilistic and not absolute and needs to be kept in the context of the data.
 :::
 
 ### Rubric
 
 |  |  |  |
-|--------------|------------------------------|-----------------------------|
+|-----------------|----------------------------|---------------------------|
 | **Criteria** | **Mastery (10)** | **Incomplete (0)** |
 | **Question 1a: HW Smoothing** | Demonstrate the implementation of the Holt-Winters smoothing method in R, providing well-commented code that clearly explains each step of the algorithm. They correctly specify the necessary parameters, including trend and seasonality components. | Students encounter difficulties in accurately implementing the Holt-Winters smoothing method in R. Their code may lack sufficient comments or clarity, making it challenging to understand the implementation process. Additionally, they may overlook important parameters or make errors in the application of the method, leading to inaccuracies in the results. |
 |  | **Mastery (10)** | **Incomplete (0)** |
