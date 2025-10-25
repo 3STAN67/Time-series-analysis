@@ -1,0 +1,242 @@
+---
+title: "Time Series Homework: Chapter 3 Lesson 4"
+subtitle: "Tristan Farrow"
+format: 
+  html:
+    embed-resources: true
+    toc: true
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Loading R packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, 
+               tsibble, fable,
+               feasts, tsibbledata,
+               fable.prophet,
+               patchwork,
+               lubridate, 
+               rio,
+               kableExtra
+               )
+```
+
+## Data
+
+```{r, message=FALSE}
+
+avgkwhr <- rio::import("https://byuistats.github.io/timeseries/data/USENERGYPRICE2.csv")
+
+```
+
+## Questions
+
+### Question 1 - Context and Measurement (10 points)
+
+The first part of any time series analysis is context. You cannot properly analyze data without knowing what the data is measuring. Without context, the most simple features of data can be obscure and inscrutable. This homework assignment will center around the series below.
+
+Please research the time series. In the spaces below, give the data collection process, unit of analysis, and meaning of each observation for the series.
+
+**Average Price of Electricity per Kilowatt-Hour in U.S.: City Average**
+
+<https://fred.stlouisfed.org/series/APU000072610>
+
+::: {.callout-note title="Answer" icon="false"}
+**Data Collection Process:**
+
+This data set is a collection of the average price per kilowatt hour in the United States. Some energy prices like household fuel and motor fuel are collected for the Consumer Price Index (CPI). Electricity prices however are collected by the U.S. Department of Energy by a mail questionnaire.
+
+**Unit of Analysis:**
+
+The unit that these observations are in is a price per kilowatt hour measurement in USD (\$).
+
+**Meaning of Each Observation:**
+
+This is the average retail price paid by urban U.S. consumers for residential electricity, measured in dollars per kilowatt hour, during the month.
+:::
+
+### Question 2 - US Average Price of Electricity: Additive Holt-Winters Forecasting (25 points)
+
+#### a) Please use the Holt-Winters smoothing method to the series.
+
+::: {.callout-caution collapse="true"}
+## Missing data
+
+We will discuss this more in class but for those who are curious in this dataset originally there was no value for September 1985. In this case with only one seemingly random value missing from our data the implications of how we fill the value are less impactful, regardless the method chosen here was to average the values from $t_{-1}$ & $t_{+1}$ then use the resulting value to fill the missing data. This can be accomplished quickly using the following base R code:
+
+```{r}
+#| eval: false
+#| warning: false
+# Average the values from the periods before(82) and after(84) the missing period(83).
+value <- (avgkwhr$usenergyprice[82]+avgkwhr$usenergyprice[84])/2
+# this evaluates to 0.835
+
+# Fill missing value with average of surrounding values
+avgkwhr$usenergyprice[83] <- value
+
+
+```
+
+For your convience the data provided for this Homework assignment has already been filled.
+:::
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+avgkwhr_ts <- avgkwhr |> 
+  mutate(yearmonth = yearmonth(observation_date)) |> 
+  select(yearmonth, usenergyprice) |> 
+  tsibble(index = yearmonth)
+
+avgkwhr_hw <- avgkwhr_ts |> 
+  model(Additive = ETS(
+    usenergyprice ~ trend("A") + error("A") + season("A"),
+        opt_crit = "amse", nmse = 1
+     )
+    )
+
+report(avgkwhr_hw)
+```
+:::
+
+#### b) What parameters values did you choose for $\alpha$, $\beta$, and $\gamma$. Justify your choice.
+
+::: {.callout-note title="Answer" icon="false"}
+The optimization parameter was set to minimize the average mean squared error (AMSE). The model selected smoothing parameters of α = 0.241, β = 0.011, and γ = 0.0007.
+
+The **alpha (α)** value of 0.241 controls how quickly the model’s level adjusts to new data. This moderate value indicates that the model responds somewhat to recent changes in electricity prices, reflecting the fact that prices can shift relatively quickly in response to market conditions.
+
+The **beta (β)** parameter of 0.011 governs how fast the trend component updates over time. Because β is quite small, the trend changes gradually, implying that the underlying direction of prices evolves slowly rather than reacting sharply to short-term fluctuations.
+
+Finally, the **gamma (γ)** value of 0.0007 determines how quickly the seasonal component adapts to new seasonal patterns. The near-zero γ suggests that the model assumes seasonality is highly stable over time, with little to no change from one seasonal cycle to the next.
+:::
+
+#### c) Please plot the Holt-Winters forecast of the series for the next 12 months superimposed against the original series. Please see Figure 4 in Chapter 3: Lesson 4
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+avgkwhr_hw |> 
+  forecast(h = "12 months") |> 
+  autoplot(avgkwhr_ts, level = 95) +
+  geom_line(aes(y = .fitted, color = "Fitted"),
+            data = augment(avgkwhr_hw)) +
+  scale_color_discrete(name = "") +
+  theme_bw() +
+  labs(x = "Dates") +
+  theme(legend.position = "bottom")
+  
+
+
+
+
+```
+:::
+
+#### d) Is the trend in the US Average Price of Electricity series deterministic or stochastic? What is the basis of your evaluation?
+
+::: {.callout-note title="Answer" icon="false"}
+The U.S. average price of electricity per kilowatt-hour appears largely **deterministic**, characterized by consistent seasonality, a gradually evolving trend, and overall stability across an extended time period. However, this pattern was disrupted beginning in 2020. The onset of the COVID-19 pandemic introduced significant volatility into energy markets, breaking the previously stable relationships that governed price movements. Prior to this period, the series exhibited a predictable structure with limited stochastic variation, aligning well with a deterministic process.
+:::
+
+### Question 3 - Real US Average Price of Electricity: Additive Holt-Winters Forecasting (25 points)
+
+The upward trend of the series is mostly due to inflation, the generalized increase in prices throughout the economy. One way to quantify inflation is to use a price index, like the Personal Consumption Expenditures Deflator (PCE).The series [HERE](https://fred.stlouisfed.org/series/PCEPILFE) shows that prices in the US have climbed steadily over the last 60 years. Because energy is an important part of the economy, it's likely that energy prices have followed a similar pattern. Adjusting a series with nominal prices, like the price of electricity, to real prices that account for inflation is simple, divide the original series by the price index. The data set imported below is the real price of electricity, which is the US Average Price of Electricity divided by the PCE index excluding food and energy prices (PCEPILFE). Repeat steps a) to d) for the updated series.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r, message=FALSE}
+
+real_avgkwhr <- rio::import("https://byuistats.github.io/timeseries/data/USENERGYPRICE_Real2.csv")
+
+```
+:::
+
+#### a) Please use the Holt-Winters smoothing method to the series.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+real_ts  <- real_avgkwhr |> 
+  mutate(yearmonth = yearmonth(observation_date)) |> 
+  select(yearmonth, realprices) |> 
+  tsibble(index = yearmonth) 
+
+real_hw <- real_ts |> 
+  model(Additive = ETS(
+    realprices ~ trend("A") + error("A") + season("A"),
+    opt_crit =  "amse", nmse = 1
+  ))
+
+report(real_hw)
+```
+:::
+
+```{r}
+autoplot(real_ts) +
+  labs(
+    title = "Real U.S. Kilowatt Hour Prices",
+    x = "Dates",
+    y = "Price (USD$)"
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+#### b) What parameters values did you choose for $\alpha$, $\beta$, and $\gamma$. Justify your choice.
+
+::: {.callout-note title="Answer" icon="false"}
+This model, like the previous one, was optimized to minimize the average mean squared error (AMSE). When comparing the current parameter estimates to the earlier model, the most notable differences are in the alpha and gamma values.
+
+The **alpha (α)** of 0.0209 is much smaller than before, meaning the model places significantly less weight on recent observations and relies more heavily on historical data. This indicates that short-term fluctuations have a limited influence on the model’s level component.
+
+In contrast, the **gamma (γ)** value of 0.0329 is higher than in the previous model, suggesting that the seasonal component is now more adaptive. This implies that seasonal patterns have become less stable and are changing more frequently over time.
+:::
+
+#### c) Please plot the Holt-Winters forecast of the series for the next 12 months superimposed against the original series. Please see Figure 4 in Chapter 3: Lesson 4
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+real_hw |> 
+  forecast(h = "12 months") |> 
+  autoplot(real_ts, level = 95) +
+  geom_line(aes(y = .fitted, color = "Fitted"),
+            data = augment(real_hw)) +
+  scale_color_discrete(name = "") +
+  theme_bw() +
+  labs(x = "Dates") +
+  theme(legend.position = "bottom")
+
+```
+:::
+
+#### d) Is the trend in the US Average Real Price of Electricity series deterministic or stochastic? What is the basis of your evaluation?
+
+::: {.callout-note title="Answer" icon="false"}
+This series is much more stochastic than the prior series. It has much faster and larger swings in price. The smoothing before was relatively close to the data compared to this one that while similar has much more deviation.
+:::
+
+### Rubric
+
+|  |  |  |
+|------------------|----------------------------|---------------------------|
+| **Criteria** | **Mastery (10)** | **Incomplete (0)** |
+| **Question 1: Context and Measurement** | The student thoroughly researches the data collection process, unit of analysis, and meaning of each observation for both the requested time series. Clear and comprehensive explanations are provided. | The student does not adequately research or provide information on the data collection process, unit of analysis, and meaning of each observation for the specified series. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3a: HW Smoothing** | Demonstrate the implementation of the Holt-Winters smoothing method in R, providing well-commented code that clearly explains each step of the algorithm. They correctly specify the necessary parameters, including trend and seasonality components. | Students encounter difficulties in accurately implementing the Holt-Winters smoothing method in R. Their code may lack sufficient comments or clarity, making it challenging to understand the implementation process. Additionally, they may overlook important parameters or make errors in the application of the method, leading to inaccuracies in the results. |
+|  | **Mastery (10)** | **Incomplete (0)** |
+| **Question 3b: Parameter Choice** | Responses not only specify the chosen parameter values for \$\\alpha\$, \$\\beta\$, and \$\\gamma\$ in the context of the Holt-Winters smoothing method but also correctly identify the purpose of each parameter in their explanation. They provide a thorough justification for each parameter choice, considering factors such as the data characteristics, seasonality patterns, and the desired level of smoothing | Student struggles to clearly specify the chosen parameter values for \$\\alpha\$, \$\\beta\$, and \$\\gamma\$. It's no clear that they understand the purpose of each parameter in their explanation. They may provide limited or vague justification for each parameter choice, lacking consideration of important factors such as data characteristics or seasonality patterns. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3c: Forecast Plot** | Responses effectively create a plot of the Holt-Winters forecast for the next 24 months superimposed against the original series in R. The forecasted values align with the original series and display relevant trends and seasonality patterns. Additionally, they appropriately label the axes, title the plot, and provide a clear legend to distinguish between the original series and the forecast. The plot closely resembles Figure 7 in the Time Series Notebook | Student encounter challenges in creating a plot of the Holt-Winters forecast. They may struggle with accurately implementing the plotting code, resulting in inaccuracies or inconsistencies in the plotted forecast. Additionally, their plot may lack proper labeling of the axes, a title, or a legend, making it difficult to interpret the information presented. Furthermore, their plot may deviate significantly from Figure 7 in the Time Series Notebook. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3d: Trend Evaluation** | The submission demonstrate a clear understanding of the distinction between deterministic and stochastic trends and provide a reasoned argument for their assessment based on the observed data properties. They provide anevaluation of the data characteristics, considering factors such as the presence of consistent patterns or irregular fluctuations over time. Analyses involve visual inspections to identify any discernible patterns or randomness in the trend. | Student offers limited insights into the data characteristics, lacking consideration of relevant factors such as patterns or fluctuations over time. Additionally, their evaluation may lack depth or coherence. No plots drawn to evaluate the trend. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3a: HW Smoothing** | Demonstrate the implementation of the Holt-Winters smoothing method in R, providing well-commented code that clearly explains each step of the algorithm. They correctly specify the necessary parameters, including trend and seasonality components. | Students encounter difficulties in accurately implementing the Holt-Winters smoothing method in R. Their code may lack sufficient comments or clarity, making it challenging to understand the implementation process. Additionally, they may overlook important parameters or make errors in the application of the method, leading to inaccuracies in the results. |
+|  | **Mastery (10)** | **Incomplete (0)** |
+| **Question 3b: Parameter Choice** | Responses not only specify the chosen parameter values for \$\\alpha\$, \$\\beta\$, and \$\\gamma\$ in the context of the Holt-Winters smoothing method but also correctly identify the purpose of each parameter in their explanation. They provide a thorough justification for each parameter choice, considering factors such as the data characteristics, seasonality patterns, and the desired level of smoothing | Student struggles to clearly specify the chosen parameter values for \$\\alpha\$, \$\\beta\$, and \$\\gamma\$. It's no clear that they understand the purpose of each parameter in their explanation. They may provide limited or vague justification for each parameter choice, lacking consideration of important factors such as data characteristics or seasonality patterns. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3c: Forecast Plot** | Responses effectively create a plot of the Holt-Winters forecast for the next 24 months superimposed against the original series in R. The forecasted values align with the original series and display relevant trends and seasonality patterns. Additionally, they appropriately label the axes, title the plot, and provide a clear legend to distinguish between the original series and the forecast. The plot closely resembles Figure 7 in the Time Series Notebook | Student encounter challenges in creating a plot of the Holt-Winters forecast. They may struggle with accurately implementing the plotting code, resulting in inaccuracies or inconsistencies in the plotted forecast. Additionally, their plot may lack proper labeling of the axes, a title, or a legend, making it difficult to interpret the information presented. Furthermore, their plot may deviate significantly from Figure 7 in the Time Series Notebook. |
+|  | **Mastery (5)** | **Incomplete (0)** |
+| **Question 3d: Trend Evaluation** | The submission demonstrate a clear understanding of the distinction between deterministic and stochastic trends and provide a reasoned argument for their assessment based on the observed data properties. They provide anevaluation of the data characteristics, considering factors such as the presence of consistent patterns or irregular fluctuations over time. Analyses involve visual inspections to identify any discernible patterns or randomness in the trend. | Student offers limited insights into the data characteristics, lacking consideration of relevant factors such as patterns or fluctuations over time. Additionally, their evaluation may lack depth or coherence. No plots drawn to evaluate the trend. |
+| **Total Points** | **60** |  |
