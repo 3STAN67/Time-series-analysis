@@ -22,6 +22,11 @@ pacman::p_load(tidyverse,
                )
 ```
 
+
+## Revision
+
+  For revisions I added to my analyses of both forecasts. I also touched up a couple of the graphs. 
+
 ## Data
 
 ```{r, message=FALSE}
@@ -45,7 +50,7 @@ Please research the time series. In the spaces below, give the data collection p
 ::: {.callout-note title="Answer" icon="false"}
 **Data Collection Process:**
 
-This data set is a collection of the average price per kilowatt hour in the United States. Some energy prices like household fuel and motor fuel are collected for the Consumer Price Index (CPI). Electricity prices however are collected by the U.S. Department of Energy by a mail questionnaire.
+This data set is a collection of the average price per kilowatt hour in the United States. Some energy prices like household fuel and motor fuel are collected for the Consumer Price Index (CPI). Electricity prices however are collected by the U.S. Department of Energy by a mail questionnaire in 75 urban areas across the U.S.
 
 **Unit of Analysis:**
 
@@ -99,6 +104,20 @@ report(avgkwhr_hw)
 ```
 :::
 
+```{r}
+autoplot(avgkwhr_ts) +
+  labs(
+    title = "Average U.S. Kilowatt hour Price",
+    x = "Date",
+    y = "Price (USD$)"
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+  
+```
+
 #### b) What parameters values did you choose for $\alpha$, $\beta$, and $\gamma$. Justify your choice.
 
 ::: {.callout-note title="Answer" icon="false"}
@@ -135,7 +154,15 @@ avgkwhr_hw |>
 #### d) Is the trend in the US Average Price of Electricity series deterministic or stochastic? What is the basis of your evaluation?
 
 ::: {.callout-note title="Answer" icon="false"}
-The U.S. average price of electricity per kilowatt-hour appears largely **deterministic**, characterized by consistent seasonality, a gradually evolving trend, and overall stability across an extended time period. However, this pattern was disrupted beginning in 2020. The onset of the COVID-19 pandemic introduced significant volatility into energy markets, breaking the previously stable relationships that governed price movements. Prior to this period, the series exhibited a predictable structure with limited stochastic variation, aligning well with a deterministic process.
+The U.S. average price of electricity per kilowatt-hour appears largely **deterministic**, characterized by consistent seasonality, a gradually evolving trend, and overall stability across an extended time period. However, this pattern was disrupted beginning in 2020. The onset of the COVID-19 pandemic introduced significant volatility into energy markets, breaking the previously stable relationships that governed price movements.
+
+**Trend**
+
+The trend is steady upward meaning that prices have risen over time. This could be explained by the rising demand of electricity over time from technology like the number of machines in our home that need electricity has increased.
+
+**Seasonality**
+
+The data shows a clear 12 month cycle.
 :::
 
 ### Question 3 - Real US Average Price of Electricity: Additive Holt-Winters Forecasting (25 points)
@@ -220,7 +247,7 @@ This series is much more stochastic than the prior series. It has much faster an
 ### Rubric
 
 |  |  |  |
-|------------------|----------------------------|---------------------------|
+|------------------|---------------------------|---------------------------|
 | **Criteria** | **Mastery (10)** | **Incomplete (0)** |
 | **Question 1: Context and Measurement** | The student thoroughly researches the data collection process, unit of analysis, and meaning of each observation for both the requested time series. Clear and comprehensive explanations are provided. | The student does not adequately research or provide information on the data collection process, unit of analysis, and meaning of each observation for the specified series. |
 |  | **Mastery (5)** | **Incomplete (0)** |
