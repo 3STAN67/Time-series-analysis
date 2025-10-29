@@ -1,0 +1,65 @@
+---
+title: "Holt Winters & Exponential Smoothing"
+author: "Tristan Farrow"
+format: 
+  html: 
+    fold-code: True
+---
+
+## Background
+
+
+```{r}
+#| warning: false
+
+# Load the required packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, 
+               tsibble, fable,
+               feasts, tsibbledata,
+               fable.prophet,
+               patchwork,
+               lubridate, 
+               rio,
+               ggplot2,
+               kableExtra,
+               readxl
+               )
+```
+
+## Data
+
+```{r}
+df <- read_excel("listings.xlsx")
+
+df <- pivot_longer(df, cols = -"Region", names_to = "Date", values_to = "Value")
+
+df <- df |> 
+  filter(Region == "National") |> 
+  mutate(date = yearmonth(Date)) |> 
+  select(-Date)
+
+ggplot(
+  data = df,
+  aes(x = date, y = Value)
+) +
+  geom_line(color = "gray2", linewidth = 0.7) +
+  scale_y_continuous(
+    labels = scales::label_comma()
+  ) +
+  labs(
+    title = "National Home Listings",
+    subtitle = "Source: Redfin Data",
+    x = "Date",
+    y = "Count"
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+
+```
+
+
+# Holt Winters
