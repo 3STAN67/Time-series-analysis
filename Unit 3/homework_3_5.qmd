@@ -82,32 +82,27 @@ Meaning of Observation: Each observation represents the value of
 production adjusted for price changes.
 :::
 
-### Question 2 - US Nominal GDP (25 points)
-
-#### a) Please use the Holt-Winters smoothing method to the US Nominal GDP series. Justify your model choice.
-
-::: {.callout-note title="Answer" icon="false"}
 ```{r}
 ngdp_ts <- ngdp |> 
-  mutate(date = mdy(quarter)) |> 
+  mutate(quarter = yearquarter(quarter)) |> 
   rename("nominal_gdp" = gdp_millions) |> 
-  select(date, nominal_gdp) |> 
-  tsibble(index = date)
+  select(quarter, nominal_gdp) |> 
+  tsibble(index = quarter)
   
 rgdp_ts <- rgdp |> 
-  mutate(date = ymd(DATE)) |> 
+  mutate(quarter = yearquarter(DATE)) |> 
   rename("real_gdp" = GDPC1) |> 
-  select(date, real_gdp) |> 
-  tsibble(index = date)
+  select(quarter, real_gdp) |> 
+  tsibble(index = quarter)
 
-data <- left_join(ngdp_ts, rgdp_ts, by = "date") |> 
+data <- left_join(ngdp_ts, rgdp_ts, by = "quarter") |> 
   pivot_longer(
     cols = c(nominal_gdp, real_gdp),
     names_to = "Series",
     values_to = "Values"
   )
 
-ggplot(data = data, aes(x = date, y = Values, color = Series)) +
+ggplot(data = data, aes(x = as.Date(quarter), y = Values, color = Series)) +
   geom_line() +
   labs(
     title = "Gross Domestic Product",
@@ -118,6 +113,10 @@ ggplot(data = data, aes(x = date, y = Values, color = Series)) +
   scale_y_continuous(
     labels = scales::label_dollar()
   ) +
+  scale_x_date(
+    breaks = "15 years",
+    labels = scales::date_format("%Y")
+  ) +
   facet_wrap(~ Series, scales = "free_y") +
   theme_bw() +
   theme(
@@ -126,19 +125,31 @@ ggplot(data = data, aes(x = date, y = Values, color = Series)) +
   )
 ```
 
+### Question 2 - US Nominal GDP (25 points)
+
+#### a) Please use the Holt-Winters smoothing method to the US Nominal GDP series. Justify your model choice.
+
+::: {.callout-note title="Answer" icon="false"}
+
 ```{r}
+nominal_hw <- ngdp_ts |> 
+  model(Additive = ETS(nominal_gdp ~ trend("A", alpha = 0.01, beta = 0.001) + error("A") + season("M", gamma = 0.05),
+        opt_crit = "amse", nmse = 1))
 
-
-
+report(nominal_hw)
 ```
 
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+I selected an additive model with multiplicative seasonality because, as the trend increases, the cyclical fluctuations in the data also grow in magnitude. A purely additive model would fail to capture this expanding seasonal variation, causing those effects to be absorbed into the error term instead of being modeled appropriately. 
 :::
 
 #### b) What parameters values did you choose for $\alpha$, $\beta$, and $\gamma$. Justify your choice.
 
 ::: {.callout-note title="Answer" icon="false"}
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+$Alpha$: 0.01
+$Beta$: 0.001
+$Gamma$:0.05
+
+Examining the time series, I selected a smaller alpha value because business cycles include periods of expansion and recession. A higher alpha would cause the model to closely follow these short-term fluctuations, reducing the desired smoothing effect. The beta parameter controls trend smoothing, and I set it to 0.001 to prevent the model from overreacting to temporary deviations that typically revert to the mean. The data exhibits relatively mild seasonality that increases alongside the overall trend. A small gamma value allows the model to adjust gradually as the trend grows while filtering out short-term variations.
 :::
 
 #### c) Please plot the Holt-Winters forecast of the series for the next 12 months superimposed against the original series. Please see [Figure 7](https://byuistats.github.io/timeseries/chapter_3_lesson_3.html#fig-crime-hw-forecast) in Chapter 3: Lesson 3.
@@ -146,12 +157,31 @@ ggplot(data = data, aes(x = date, y = Values, color = Series)) +
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
 
+nominal_forecast <- nominal_hw |> 
+  forecast(h = "12 months")
 
+nominal_forecast |> 
+  autoplot(ngdp_ts, level = 95) +
+  geom_line(aes(y = .fitted, color = "Fitted"),
+            data = augment(nominal_hw)) +
+  labs(
+    title = "U.S. Nominal GDP",
+    x = "Date",
+    y = "Millions of Dollars",
+    color = "Color"
+  ) +
+  scale_y_continuous(labels = scales::label_dollar())+
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
 
 ```
 :::
 
 #### d) How confident are you in your forecast? Please explain.
+
+I am confident in the model’s performance. I aimed for a specification that adapts to changes in the data without overreacting, and the results indicate that it effectively smooths the series while maintaining responsiveness to underlying trends.
 
 ### Question 3 - US Real GDP (25 points)
 
@@ -172,19 +202,52 @@ refer to it for the questions that follow.
 #### a) Please use H-W to smooth the US Real GDP series to obtain an estimate of US Potential GDP.
 
 ::: {.callout-note title="Answer" icon="false"}
+
+```{r}
+real_hw <- rgdp_ts |> 
+  model(Additive = ETS(real_gdp ~
+        trend("A", alpha = 0.1, beta = 0.01) + error("A") + season("M", gamma = 0.001),
+        opt_crit = "amse", nmse = 1))
+
+report(real_hw)
+```
+
+
 ```{r}
 
+real_forecast <- real_hw |> 
+  forecast(h = "12 months")
 
+real_forecast |> 
+  autoplot(rgdp_ts, level = 95) +
+  geom_line(aes(y = .fitted, color = "Fitted"),
+            data = augment(real_hw)) +
+  labs(
+    title = "U.S. Real GDP",
+    x = "Date",
+    y = "Millions of Dollars"
+  ) +
+  scale_y_continuous(
+    labels = scales::label_dollar()
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
 
 ```
 
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
 :::
 
 #### b) What parameters values did you choose for $\alpha$, $\beta$, and $\gamma$. Justify your choice.
 
 ::: {.callout-note title="Answer" icon="false"}
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+$Alpha$: 0.1
+$Beta$: 0.01
+$Gamma$: 0.001
+
+I selected smaller parameter values for this model because, as indicated by the y-axis scale, this series evolves more gradually than nominal GDP. Since the underlying process changes at a slower pace, smaller smoothing parameters allow the model to adjust more cautiously, providing a smoother and more stable fit over time.
+
 :::
 
 ### Rubric
