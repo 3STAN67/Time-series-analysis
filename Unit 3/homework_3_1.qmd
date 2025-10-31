@@ -138,7 +138,7 @@ The lags closed to zero appear to be practically significant and indicate that t
 ### Rubric
 
 |  |  |  |
-|--------------|------------------------------|-----------------------------|
+|----|----|----|
 | **Criteria** | **Mastery (10)** | **Incomplete (0)** |
 | **Question 1: Context and Measurement** | The student thoroughly researches the data collection process, unit of analysis, and meaning of each observation for both the requested time series. Clear and comprehensive explanations are provided. | The student does not adequately research or provide information on the data collection process, unit of analysis, and meaning of each observation for the specified series. |
 |  | **Mastery (5)** | **Incomplete (0)** |
