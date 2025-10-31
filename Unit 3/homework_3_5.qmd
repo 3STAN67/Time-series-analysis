@@ -57,7 +57,9 @@ Data Collection Process: Gross Domestic Product (GDP) is broken down
 into a few different parts: consumer spending, business investment,
 government spending, and net exports. These different sectors can be fit
 together to make the GDP formula, Nominal GDP $= C+I+G+(X-M)$. This data
-is collected through surveys, tax records, and administrative data.
+originates from the National Income and Product Accounts (NIPA) which
+capture the market value of the goods and services produced by labor and
+property located in the United States.
 
 Unit of Analysis: The unit of analysis is everything a country produces
 during a certain period at current prices on a national level.
@@ -72,14 +74,15 @@ value of goods and services produced at current prices.
 
 ::: {.callout-note title="Answer" icon="false"}
 Data Collection Process: Real GDP is the nominal GDP after being
-adjusted for inflation using a price index. The data collection
-resources are the same as nominal GDP.
+adjusted for inflation using a price index.
 
 Unit of Analysis: The unit of analysis is everything a country produces
-during a certain period on a national level adjusted for inflation.
+during a certain period on a national level using 2017 as a base year.
 
 Meaning of Observation: Each observation represents the value of
-production adjusted for price changes.
+production adjusted for price changes. The price adjustment help to
+remove the price change distortion to capture the more realistic idea of
+national production.
 :::
 
 ```{r}
@@ -130,26 +133,34 @@ ggplot(data = data, aes(x = as.Date(quarter), y = Values, color = Series)) +
 #### a) Please use the Holt-Winters smoothing method to the US Nominal GDP series. Justify your model choice.
 
 ::: {.callout-note title="Answer" icon="false"}
-
 ```{r}
 nominal_hw <- ngdp_ts |> 
-  model(Additive = ETS(nominal_gdp ~ trend("A", alpha = 0.01, beta = 0.001) + error("A") + season("M", gamma = 0.05),
+  model(Additive = ETS(nominal_gdp ~ trend("A", alpha = 0.1, beta = 0.01) + error("A") + season("M", gamma = 0.05),
         opt_crit = "amse", nmse = 1))
 
 report(nominal_hw)
 ```
 
-I selected an additive model with multiplicative seasonality because, as the trend increases, the cyclical fluctuations in the data also grow in magnitude. A purely additive model would fail to capture this expanding seasonal variation, causing those effects to be absorbed into the error term instead of being modeled appropriately. 
+I selected an additive model with multiplicative seasonality because, as
+the trend increases, the cyclical fluctuations in the data also grow in
+magnitude. A purely additive model would fail to capture this expanding
+seasonal variation, causing those effects to be absorbed into the error
+term instead of being modeled appropriately.
 :::
 
 #### b) What parameters values did you choose for $\alpha$, $\beta$, and $\gamma$. Justify your choice.
 
 ::: {.callout-note title="Answer" icon="false"}
-$Alpha$: 0.01
-$Beta$: 0.001
-$Gamma$:0.05
+$Alpha$: 0.1 $Beta$: 0.01 $Gamma$:0.05
 
-Examining the time series, I selected a smaller alpha value because business cycles include periods of expansion and recession. A higher alpha would cause the model to closely follow these short-term fluctuations, reducing the desired smoothing effect. The beta parameter controls trend smoothing, and I set it to 0.001 to prevent the model from overreacting to temporary deviations that typically revert to the mean. The data exhibits relatively mild seasonality that increases alongside the overall trend. A small gamma value allows the model to adjust gradually as the trend grows while filtering out short-term variations.
+I chose a moderate alpha value to reflect the idea that nominal GDP will
+respond more quickly to economic conditions like inflation. The beta
+parameter controls trend smoothing, and I set it to 0.01 to prevent the
+model from overreacting to temporary deviations that typically revert to
+the mean and evolve more gradually. The data exhibits relatively mild
+seasonality that increases alongside the overall trend. A small gamma
+value allows the model to adjust gradually as the trend grows while
+filtering out short-term variations.
 :::
 
 #### c) Please plot the Holt-Winters forecast of the series for the next 12 months superimposed against the original series. Please see [Figure 7](https://byuistats.github.io/timeseries/chapter_3_lesson_3.html#fig-crime-hw-forecast) in Chapter 3: Lesson 3.
@@ -181,7 +192,9 @@ nominal_forecast |>
 
 #### d) How confident are you in your forecast? Please explain.
 
-I am confident in the model’s performance. I aimed for a specification that adapts to changes in the data without overreacting, and the results indicate that it effectively smooths the series while maintaining responsiveness to underlying trends.
+Obviously, caution needs to be taken with any forecast as it is just
+that, a forecast. Forecasts are assuming that past trends continue but
+there is no guarantee that will happen.
 
 ### Question 3 - US Real GDP (25 points)
 
@@ -202,16 +215,14 @@ refer to it for the questions that follow.
 #### a) Please use H-W to smooth the US Real GDP series to obtain an estimate of US Potential GDP.
 
 ::: {.callout-note title="Answer" icon="false"}
-
 ```{r}
 real_hw <- rgdp_ts |> 
   model(Additive = ETS(real_gdp ~
-        trend("A", alpha = 0.1, beta = 0.01) + error("A") + season("M", gamma = 0.001),
+        trend("A", alpha = 0.1, beta = 0.05) + error("A") + season("M", gamma = 0.001),
         opt_crit = "amse", nmse = 1))
 
 report(real_hw)
 ```
-
 
 ```{r}
 
@@ -236,18 +247,20 @@ real_forecast |>
   )
 
 ```
-
 :::
 
 #### b) What parameters values did you choose for $\alpha$, $\beta$, and $\gamma$. Justify your choice.
 
 ::: {.callout-note title="Answer" icon="false"}
-$Alpha$: 0.1
-$Beta$: 0.01
-$Gamma$: 0.001
+$Alpha$: 0.1 $Beta$: 0.05 $Gamma$: 0.001
 
-I selected smaller parameter values for this model because, as indicated by the y-axis scale, this series evolves more gradually than nominal GDP. Since the underlying process changes at a slower pace, smaller smoothing parameters allow the model to adjust more cautiously, providing a smoother and more stable fit over time.
-
+Like the Nominal GDP model, I chose parameters to balance how quickly
+the model reacts to new data with how steady it stays over time. I kept
+the level parameter at the same level, 0.1, to allow it to adjust to
+economic changes. The trend parameter lets the model adjust its slope
+based on newer data while still keeping the long-term growth pattern in
+mind. The seasonal parameter stayed the same as the Nominal GDP model as
+the seasonal patterns don't usually change much over time.
 :::
 
 ### Rubric

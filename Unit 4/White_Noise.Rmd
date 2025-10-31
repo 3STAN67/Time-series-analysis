@@ -1,0 +1,24 @@
+---
+title: "White_Noise"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+
+# Set random seed
+set.seed(10)
+
+# Specify means and standard deviation
+n <- 2500                           # number of points
+white_noise_sigma <- rnorm(1, 5, 1) # choose a random standard deviation
+
+# Simulate normal data
+data.frame(x = rnorm(n, 0, white_noise_sigma)) 
+
+# White noise data
+# white_noise_df <- rio::import("https://byuistats.github.io/timeseries/data/white_noise.parquet")
+
+
+```
+
