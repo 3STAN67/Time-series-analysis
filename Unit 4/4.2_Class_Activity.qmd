@@ -1,0 +1,121 @@
+---
+title: "4.2_Class_Activity"
+format: html
+---
+
+```{r}
+pacman::p_load(tidyverse, 
+               tsibble, fable,
+               feasts, tsibbledata,
+               fable.prophet,
+               patchwork,
+               lubridate, 
+               rio,
+               ggplot2,
+               kableExtra,
+               tidyquant,
+               plotly,
+               tseries
+               )
+```
+
+
+```{r}
+# Set symbol and date range
+symbol <- "MCD"
+company <- "McDonald's"
+date_start <- "2020-07-01"
+date_end <- "2024-01-01"
+
+# Fetch stock prices (can be used to get new data)
+stock_df <- tq_get(symbol, from = date_start, to = date_end, get = "stock.prices")
+
+# Transform data into tsibble
+stock_ts <- stock_df %>%
+  mutate(
+    dates = date, 
+    value = adjusted
+  ) %>%
+  dplyr::select(dates, value) %>%
+  as_tibble() %>% 
+  arrange(dates) |>
+  mutate(diff = value - lag(value)) |>
+  as_tsibble(index = dates, key = NULL)
+```
+
+```{r}
+ggplot(
+  data = stock_df,
+  aes(x = date, y = open)
+) +
+  geom_line()
+```
+
+
+
+```{r}
+plot_ly(stock_ts, x = ~dates, y = ~value, type = 'scatter', mode = 'lines') %>%
+  layout(
+    xaxis = list(title = paste0("Dates (", format(ymd(date_start), "%d/%m/%Y"), " to ", format(ymd(date_end), "%d/%m/%Y"), ")" ) ),
+    yaxis = list(title = "Closing Price (US$)"),
+    title = paste0("Time Plot of ", symbol, " Daily Closing Price")
+  )
+```
+
+```{r}
+# Generate time series plot using plot_ly
+plot_ly(stock_ts, x = ~dates, y = ~diff, type = 'scatter', mode = 'lines') %>%
+  layout(
+    xaxis = list(title = paste0("Dates (", format(ymd(date_start), "%d/%m/%Y"), " to ", format(ymd(date_end), "%d/%m/%Y"), ")" ) ),
+    yaxis = list(title = "Closing Price (US$)"),
+    title = paste0("Difference of ", symbol, " Daily Closing Price")
+  )
+```
+
+```{r}
+#| warning: false
+# Histogram of differences in stock prices
+stock_ts |>
+  mutate(
+    density = dnorm(diff, mean(stock_ts$diff, na.rm = TRUE), sd(stock_ts$diff, na.rm = TRUE))
+  ) |>
+  ggplot(aes(x = diff)) +
+    geom_histogram(aes(y = after_stat(density)),
+        color = "white", fill = "#56B4E9", binwidth = 1) +
+    geom_line(aes(x = diff, y = density)) +
+    theme_bw() +
+    labs(
+      x = "Difference",
+      y = "Frequency",
+      title = "Histogram of Difference in the Closing Stock Prices"
+    ) +
+    theme(
+      plot.title = element_text(hjust = 0.5)
+    )
+```
+
+
+
+```{r}
+shapiro.test(stock_ts$diff)
+```
+
+```{r}
+jarque.bera.test(stock_ts$diff |> na.omit())
+```
+
+```{r}
+mean(stock_ts$diff |> na.omit())
+```
+
+
+```{r}
+t.test(stock_ts$diff, conf.level = 0.95)
+```
+
+```{r}
+
+
+
+```
+
