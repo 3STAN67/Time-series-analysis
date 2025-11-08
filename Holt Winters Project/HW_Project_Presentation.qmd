@@ -1,0 +1,209 @@
+---
+title: "Exponential Smoothing"
+subtitle: "Holt-Winters Method"
+author: "Tristan Farrow"
+format: 
+  revealjs:
+    theme: simple
+    slide-number: true
+    incremental: true
+---
+
+
+## What is Exponential Smoothing? 
+
+Exponential Smoothing uses weighted averages to change how adaptive a model using smoothing parameters. This enables the model to be adapted to the context, use, or volatility of the data by weighing new data more heavily or relying more on historic trends. 
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+
+# Load the required packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, 
+               tsibble, fable,
+               feasts, tsibbledata,
+               fable.prophet,
+               patchwork,
+               lubridate, 
+               rio,
+               ggplot2,
+               kableExtra,
+               readxl,
+               forecast
+               )
+```
+
+
+
+## The Data Source
+
+[Redfin](https://www.redfin.com/) is an online real estate brokerage that helps people buy and sell residential properties. Through its online marketplace and access to Multiple Listing Services (MLS), Redfin compiles extensive housing data, which it shares publicly through its [Data Center](https://www.redfin.com/news/data-center/).  
+
+The data set examined here tracks the number of home listings in the U.S. from March 2012 through July 2025. This represents the supply side of the housing market: the total number of homes available for purchase at any given time.
+
+## The Data Set
+
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false 
+#| eval: true 
+#| fig-align: center
+
+
+# Read in the data
+df <- read_excel("listings.xlsx")
+
+# Make the data Tidy
+df <- pivot_longer(df, cols = -"Region", names_to = "Date", values_to = "Value")
+
+df <- df |> 
+  filter(Region == "National") |> 
+  mutate(date = yearmonth(Date)) |> 
+  select(-Date)
+
+# Plot the data
+ggplot(
+  data = df,
+  aes(x = date, y = Value)
+) +
+  geom_line(color = "gray2", linewidth = 0.7) +
+  scale_y_continuous(
+    labels = scales::label_comma()
+  ) +
+  labs(
+    title = "National Home Listings",
+    caption = "Source: Redfin Data ()",
+    x = "Date",
+    y = "Count"
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+
+```
+
+## Holt-Winters Method
+
+Holt-Winters exponential smoothing is a sophisticated forecasting technique designed specifically for time series data that exhibits both trend and seasonal patterns.Holt-Winters maintains three separate components:
+
+::: incremental
+- $\alpha$ (alpha) for the level
+- $\beta$ (beta) for the trend
+- $\gamma$ (gamma) for the seasonal component
+:::
+
+## Holt-Winters Model
+
+:::: {.columns}
+
+:::{.column width="75%"}
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false 
+#| eval: true
+
+df_ts <- df %>% 
+  tsibble(index = date)
+
+df_hw <- df_ts %>% 
+  model(Additive = ETS(Value ~ trend("A", alpha = 0.3, beta = 0.001) + error("A") + season("A", gamma = 0.0001),
+                       opt_crit = "amse", nmse = 1))
+
+df_hw %>% 
+  augment() %>% 
+  ggplot(aes(x = date)) + 
+  geom_line(aes(y = Value, colour = "Actual Data"), size = 0.7) +
+  geom_line(aes(y = .fitted, colour = "Fitted (Holt Winters)"), size = 0.7) +
+  labs(
+    title = "National Home Listings - Holt Winters Model",
+    x = "Date",
+    y = "Listings",
+    colour = "Series"
+  ) +
+  scale_y_continuous(
+    labels = scales::label_comma()
+  ) +
+  scale_colour_manual(values = c("Actual Data" = "black",
+                                 "Fitted (Holt Winters)" = "red")) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+:::
+
+::: {.column width="25%"}
+Parameter Levels:
+
+$\alpha$: 0.3
+
+
+$\beta$: 0.001
+
+
+$\gamma$: 0.0001
+:::
+
+::::
+
+## Evaluating the Model
+
+```{r}
+#| message: false
+#| warning: false 
+#| echo: false 
+#| eval: true
+#| fig-align: center
+
+df_hw_res <- augment(df_hw) %>% 
+  pull(.resid)
+
+acf(na.omit(df_hw_res), plot = TRUE, type = "correlation", lag.max = 36,
+    main = "Holt-Winters Random Component Autocorrelation")
+```
+
+In the correlogram shown, nearly all bars fall within the blue confidence bands, indicating no statistically significant autocorrelation in the residuals. This is the desired outcome, as it suggests our Holt-Winters model has successfully captured the systematic patterns in the data.
+
+## Forecast
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false 
+#| eval: true
+
+df_hw |> 
+  forecast(h = "24 months") |> 
+  autoplot(df_ts, level = 95) + 
+  geom_line(aes(y = .fitted, color = "Fitted"),
+            data = augment(df_hw)) + 
+  scale_color_discrete(name = "") +
+  scale_y_continuous(
+    labels = scales::label_comma()
+  ) +
+  theme_bw() +
+  labs(
+    title = "Home Listings Forecast",
+    x = "Date",
+    y = "Listings"
+    ) +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "bottom"
+    )
+```
+
+## Conclusion
+
+This analysis demonstrates the practical value of exponential smoothing methods like Holt-Winters for understanding complex time series data. Through careful decomposition and parameter selection, we can separate underlying trends from seasonal fluctuations and random noise, revealing insights that might otherwise remain hidden in the raw data. For housing market analysis specifically, this approach illuminates both the predictable rhythms of buyer and seller behavior and the longer-term structural shifts in inventory supply.
+
+

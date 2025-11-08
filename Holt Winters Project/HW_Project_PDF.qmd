@@ -1,13 +1,16 @@
 ---
-title: "Holt Winters & Exponential Smoothing"
+title: "Exponential Smoothing: Holt-Winters Method"
 author: "Tristan Farrow"
 echo: false
 format: 
-  html:
-    embed-resources: true
+  pdf:
+    toc: false
+    number-sections: false
+    keep-tex: false
+    latex-engine: xelatex
 ---
 
-## Exponential Smoothing
+# Exponential Smoothing
 
 When analyzing time series data, we often use averages to filter out random fluctuations and reveal underlying patterns. Traditional averages treat all data points equally, summing values over a period and dividing by the count. However, for data that changes dynamically over time, this equal weighting has limitations.
 
@@ -35,7 +38,7 @@ pacman::p_load(tidyverse,
 
 ## Data
 
-[Redfin](https://www.redfin.com/)is an online real estate brokerage that helps people buy and sell residential properties. Through its online marketplace and access to Multiple Listing Services (MLS), Redfin compiles extensive housing data, which it shares publicly through its [Data Center](https://www.redfin.com/news/data-center/) The site offers valuable data sets, such as median sale prices, active home listings, and median days on market, that provide insight into current regional and national housing trends. By applying exponential smoothing to this data, we can identify underlying patterns and forecast potential future market conditions.
+[Redfin](https://www.redfin.com/) is an online real estate brokerage that helps people buy and sell residential properties. Through its online marketplace and access to Multiple Listing Services (MLS), Redfin compiles extensive housing data, which it shares publicly through its [Data Center](https://www.redfin.com/news/data-center/) The site offers valuable data sets, such as median sale prices, active home listings, and median days on market, that provide insight into current regional and national housing trends. By applying exponential smoothing to this data, we can identify underlying patterns and forecast potential future market conditions.
 
 The data set examined here tracks the number of home listings in the U.S. from March 2012 through July 2025. This represents the supply side of the housing market: the total number of homes available for purchase at any given time. According to basic economic principles, when supply increases (assuming steady demand), prices tend to fall; when supply decreases, prices typically rise. For real estate agents and homeowners, understanding these supply trends is essential for gauging market competitiveness, whether it's a buyer's market with plenty of options, or a seller's market with limited inventory.
 
@@ -119,10 +122,10 @@ For the model I used the following smoothing parameters:
 $\alpha$: 0.3
 
 
-$\beta$:0.001
+$\beta$: 0.001
 
 
-$\gamma$:0.0001
+$\gamma$: 0.0001
 
 
 
@@ -186,3 +189,5 @@ The autocorrelation analysis of the residuals confirmed that the model successfu
 
 
 Ultimately, this exercise highlights how statistical methods can transform historical data into actionable intelligence. By understanding not just what happened, but why patterns emerge and how they might continue, decision-makers gain a more nuanced perspective on market dynamics and future possibilities.
+
+

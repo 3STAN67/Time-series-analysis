@@ -7,6 +7,10 @@ format:
     toc: true
 ---
 
+### Revision
+
+I added to my comments. 
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
 # Loading R packages
@@ -88,7 +92,7 @@ acf(stock_df$close, plot = TRUE, type = "correlation", lag.max = 90,
 
 ```
 
-The correlogram shows a high degree of correlation at different lags. This is a second order property of random walks but does not confirm if it is or not. 
+The correlogram gives strong evidence of a random walk. It shows that a day's closing price is highly correlated with the days prior to it and slowly fades over time. The slow decay is normal in non-stationary time series like a random walk. 
 :::
 
 #### c) Take the first difference of your daily closing stock prices and plot the resulting time series.
@@ -154,13 +158,8 @@ stock_ts |>
 #### e) Using your results from parts c and d, is there evidence that the first difference of daily closing stock prices follows a white noise process? Please explain.
 
 ::: {.callout-note title="Answer" icon="false"}
-```{r}
 
-
-
-```
-
-Based on the correlogram, it appears that the first order difference could be white noise. There are a few significant points outside of the confidence interval but we could expect 5% of the data to be outside of those lines and so these do not appear to be practicially significant. 
+Based on the correlogram, the first order difference gives strong evidence of white noise. There are a few significant points outside of the confidence interval but we could expect 5% of the data to be outside of those lines and so these do not appear to be practically significant. This shows a lack of significant correlation as would be expected with white noise. 
 :::
 
 ### Question 2 - Random Walks with drift and exponentially weighted slopes: Stocks (20 points)
@@ -194,7 +193,7 @@ t.test(stock_ts$diff, conf.level = 0.95)
 
 ::: {.callout-note title="Answer" icon="false"}
 
-The 95% confidence interval contains 0, and so it can not be concluded that there is evidence of a positive drift in the price of Sofi. 
+The 95% confidence interval contains 0, and so it can not be concluded that there is evidence of a positive drift in the price of Sofi. Because the process seems random, adding an exponentially weighted slope isn’t a good idea—it would likely pick up short, term random changes instead of a consistent, predictable trend.
 :::
 
 ### Rubric

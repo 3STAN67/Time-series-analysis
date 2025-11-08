@@ -3084,7 +3084,8 @@ vertical-align: -.125em;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#questions" id="toc-questions" class="nav-link active" data-scroll-target="#questions">Questions</a>
+  <li><a href="#revision" id="toc-revision" class="nav-link active" data-scroll-target="#revision">Revision</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a>
   <ul class="collapse">
   <li><a href="#question-1---random-walks-stocks-30-points" id="toc-question-1---random-walks-stocks-30-points" class="nav-link" data-scroll-target="#question-1---random-walks-stocks-30-points">Question 1 - Random Walks: Stocks (30 points)</a></li>
   <li><a href="#question-2---random-walks-with-drift-and-exponentially-weighted-slopes-stocks-20-points" id="toc-question-2---random-walks-with-drift-and-exponentially-weighted-slopes-stocks-20-points" class="nav-link" data-scroll-target="#question-2---random-walks-with-drift-and-exponentially-weighted-slopes-stocks-20-points">Question 2 - Random Walks with drift and exponentially weighted slopes: Stocks (20 points)</a></li>
@@ -3115,6 +3116,10 @@ vertical-align: -.125em;
 </header>
 
 
+<section id="revision" class="level3">
+<h3 class="anchored" data-anchor-id="revision">Revision</h3>
+<p>I added to my comments.</p>
+</section>
 <section id="questions" class="level2">
 <h2 class="anchored" data-anchor-id="questions">Questions</h2>
 <section id="question-1---random-walks-stocks-30-points" class="level3">
@@ -3204,7 +3209,7 @@ Answer
 </div>
 </div>
 </div>
-<p>The correlogram shows a high degree of correlation at different lags. This is a second order property of random walks but does not confirm if it is or not.</p>
+<p>The correlogram gives strong evidence of a random walk. It shows that a day’s closing price is highly correlated with the days prior to it and slowly fades over time. The slow decay is normal in non-stationary time series like a random walk.</p>
 </div>
 </div>
 </section>
@@ -3305,7 +3310,7 @@ Answer
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Based on the correlogram, it appears that the first order difference could be white noise. There are a few significant points outside of the confidence interval but we could expect 5% of the data to be outside of those lines and so these do not appear to be practicially significant.</p>
+<p>Based on the correlogram, the first order difference gives strong evidence of white noise. There are a few significant points outside of the confidence interval but we could expect 5% of the data to be outside of those lines and so these do not appear to be practically significant. This shows a lack of significant correlation as would be expected with white noise.</p>
 </div>
 </div>
 </section>
@@ -3384,7 +3389,7 @@ Answer
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The 95% confidence interval contains 0, and so it can not be concluded that there is evidence of a positive drift in the price of Sofi.</p>
+<p>The 95% confidence interval contains 0, and so it can not be concluded that there is evidence of a positive drift in the price of Sofi. Because the process seems random, adding an exponentially weighted slope isn’t a good idea—it would likely pick up short, term random changes instead of a consistent, predictable trend.</p>
 </div>
 </div>
 </section>
