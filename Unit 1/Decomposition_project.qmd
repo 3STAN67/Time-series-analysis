@@ -4,6 +4,7 @@ author: "Tristan Farrow"
 date: today
 format:
   html:
+    embed-resources: true
     theme: sandstone
     toc: false
     code-fold: true
