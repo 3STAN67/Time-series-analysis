@@ -1,11 +1,13 @@
 ---
 title: "Time Series Homework: Chapter 4 Lesson 3"
-subtitle: "Please_put_your_name_here"
+subtitle: "Tristan Farrow"
 format: 
   html:
     embed-resources: true
     toc: true
 ---
+
+REVISIONS: I did a lot of revisions with the code and my answers mostly in the second half of the assignment.  
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -56,7 +58,7 @@ $$
 $$
 
 ```{r}
-polyroot(c(1/2,-3/2,1))
+polyroot(c(1, -3/2, 1/2)) |> abs() |> round(3)
 ```
 :::
 
@@ -64,22 +66,71 @@ polyroot(c(1/2,-3/2,1))
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
+#| warning: false
 
 set.seed(123)
+n_rep <- 1000
+alpha0 <- 0
+alpha1 <- 1.5
+alpha2 <- -0.5
+sigma_sqr <- 9
 
-n <- 1000
+dat_ts <- tibble(w = rnorm(n = n_rep, sd = sqrt(sigma_sqr))) |>
+    mutate(
+      index = 1:n(),
+      x = 0
+    ) |>
+  mutate(y = w - lag(w)) |>
+    tsibble::as_tsibble(index = index)
 
-x_t <- cumsum(rnorm(n, mean = 0, sd = 1))
+# Simulate x values
+dat_ts$x[1] <- alpha0 + dat_ts$w[1]
+dat_ts$x[2] <- alpha0 + alpha1 * ( dat_ts$x[1] - alpha0 ) + dat_ts$w[2]
+for (i in 3:nrow(dat_ts)) {
+  dat_ts$x[i] <- alpha0 + 
+    alpha1 * ( dat_ts$x[i-1] - alpha0 ) + 
+    alpha2 * ( dat_ts$x[i-2] - alpha0 ) + 
+    dat_ts$w[i]
+}
 
-y_t <- diff(x_t)
+dat_ts |> 
+  autoplot(.vars = x) +
+    labs(
+      x = "Time",
+      y = "Simulated Time Series",
+      title = paste("Simulated Values from an AR(2) Process with Mean", alpha0)
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(hjust = 0.5)
+    ) 
 
+dat_ts |> 
+  autoplot(.vars = y) +
+    labs(
+      x = "Time",
+      y = "Simulated Time Series",
+      title = paste("Simulated Values from the first difference of an AR(2) Process with Mean", alpha0)
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(hjust = 0.5)
+    )
 ```
 :::
 
 #### c) Prove that $y_t$ is stationary, use the characteristic equation method.
 
 ::: {.callout-note title="Answer" icon="false"}
-<!-- Delete this and put your answer here. The three colons mark the end of your answer. -->
+$$
+1 - \frac{1}{2}B + \frac{1}{2}B^2 = 0
+$$
+
+```{r}
+polyroot(c(1, -1/2, .5)) |> abs() |> round(3)
+```
+
+The polyroot returns values greater than 1 and so the it is stationary.
 :::
 
 ### Question 3 - Partial Correlogram (40 points)
@@ -100,7 +151,7 @@ ind_ts <- ind_prod %>%
   tsibble(index = yearmonth)
 
 ind_HW <- ind_ts %>% 
-  model(Additive = ETS(ind_prod_indx ~ trend("A", alpha = 0.2, beta = 0.001) + error("A") + season("A", gamma = 0.01),
+  model(Additive = ETS(ind_prod_indx ~ trend("M", alpha = 0.5, beta = 0.001) + error("M") + season("M", gamma = 0.01),
                        opt_crit = "amse", nmse = 1))
 
 ind_HW %>% 
@@ -113,10 +164,13 @@ ind_HW %>%
   labs(
     title = "Holt Winters Model: US Industrial Production Index",
     x = "Date",
-    y = "Industrial Production Index"
+    y = "Industrial Production Index",
+    color = "Series"
   ) +
   theme_bw()
 ```
+
+The smoothing parameters used were $\alpha:$ 0.5, $\beta:$ 0.001, and $\gamma:$ 0.01. A multiplicative model was used as the degree in variation increases with the trend. The high alpha value is used due to the large fluctuations in the data are better matched with it. The beta and gamma are much smaller as the seasonality and long-term trend are consistent.
 :::
 
 #### b) Plot the remainder (random) component of the decomposed series.
@@ -142,7 +196,7 @@ pacf(ind_res, plot=TRUE)
 
 ```
 
-It is not very clear what auto regressive process the data is. I would guess a AR(1) based on no continuous significant lags.
+The lag 1 and 2 are significant suggesting an AR(2) model could be a good fit. The significant lags show the current value is influenced by the last two values. Past the second lag there are significant lags but these may not practically significant. I would use an AR(2) model as it appears to capture the residual effect without overfitting.
 :::
 
 ### Rubric
