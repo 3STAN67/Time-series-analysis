@@ -1,0 +1,11 @@
+---
+title: "Time Series Analysis of "
+subtitle: "Autoregressive Time Series Models"
+author: "Tristan Farrow"
+format: 
+  pdf:
+    toc: false
+    number-sections: true
+    colorlinks: true
+---
+
