@@ -1,0 +1,73 @@
+---
+title: "White Noise"
+author: "Tristan Farrow"
+echo: false
+format: 
+  pdf:
+    toc: false
+    number-sections: true
+    keep-tex: false
+    latex-engine: xelatex
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(nlme,tsibble, fable,feasts, tsibbledata,
+               fable.prophet, patchwork,lubridate, 
+               rio,ggplot2,kableExtra,tidyquant, 
+               dplyr , plotly,tidymodels, 
+               multilevelmod, broom.mixed, knitr
+)
+```
+
+# Data
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Stock Info
+ticker <- ""
+company <- ""
+start_date <- ""
+end_date <- ""
+
+# Pull stock prices
+stock_df <- tq_get(ticker, from = start_date, to = end_date, get = "stock.prices")
+```
+
+
+### Description
+
+
+# White Noise
+
+
+### Simulated Data
+
+```{r}
+# Makes the random number generation reproducible
+set.seed(42)
+
+# The number of variables 
+n <- 10000
+
+# Generates a single random number from a normal distribution with a mean of 5 and a standard deviation 1
+white_noise_sigma <- rnorm(1, 5, 1)
+
+# Makes a data frame 
+wn_df <- data.frame(x = rnorm(n, 0, white_noise_sigma))
+```
+
+
+```{r}
+acf(wn_df$x, plot = TRUE, type = "correlation")
+```
+
+
+### Stock Data
+
+```{r}
+acf(stock_df, plot = TRUE, type = "correlation")
+```
+

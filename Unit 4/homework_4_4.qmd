@@ -7,6 +7,8 @@ format:
     toc: true
 ---
 
+Revision: I corrected my data collection and the polyroot codes. 
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
 # Loading R packages
@@ -46,7 +48,7 @@ Please research the time series. In the spaces below, give the data collection p
 ::: {.callout-note title="Answer" icon="false"}
 Data Collection Process:
 
-This data is monthly averages of noon buying rates in New York City for cable transfers payable in foreign currencies. The monthly values are averages of the daily data available.
+The data is a daily collection of the foreign exchange rate if one U.S. dollar to Euro for business days.
 
 Units of Analysis:
 
@@ -63,7 +65,6 @@ Each observation represents U.S. Dollars to One Euro at a specific point in time
 
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
-
 
 set.seed(123)
 n_rep <- 100
@@ -89,7 +90,7 @@ for (i in 3:nrow(data_ts)){
 data_ts %>% 
   autoplot(.vars = x) +
   labs(
-    title = "Simulated Data",
+    title = "Simulated Values from an AR(2) Process",
     x = "Index",
     y = "Value"
   ) +
@@ -244,7 +245,7 @@ tidy(exch_ar)
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
 
-polyroot(c(0.004802754, 1.256, -0.326, 0.129, -0.064)) %>% abs() %>% round(3)
+polyroot(c(1, -1.256, 0.326, -0.129, 0.064)) %>% abs() %>% round(3)
 
 ```
 
@@ -312,7 +313,7 @@ tidy(exch_ar2)
 ::: {.callout-note title="Answer" icon="false"}
 ```{r}
 
-polyroot(c(0.259, -0.067, 0.061)) %>% abs() %>% round(3)
+polyroot(c(1,-0.259, 0.067, -0.061)) %>% abs() %>% round(3)
 
 ```
 
