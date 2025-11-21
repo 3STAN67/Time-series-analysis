@@ -9,7 +9,7 @@ format:
 
 ### Revision
 
-I added to my comments. 
+I added to my comments.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -92,7 +92,7 @@ acf(stock_df$close, plot = TRUE, type = "correlation", lag.max = 90,
 
 ```
 
-The correlogram gives strong evidence of a random walk. It shows that a day's closing price is highly correlated with the days prior to it and slowly fades over time. The slow decay is normal in non-stationary time series like a random walk. 
+The correlogram gives strong evidence of a random walk. It shows that a day's closing price is highly correlated with the days prior to it and slowly fades over time. The slow decay is normal in non-stationary time series like a random walk.
 :::
 
 #### c) Take the first difference of your daily closing stock prices and plot the resulting time series.
@@ -158,8 +158,7 @@ stock_ts |>
 #### e) Using your results from parts c and d, is there evidence that the first difference of daily closing stock prices follows a white noise process? Please explain.
 
 ::: {.callout-note title="Answer" icon="false"}
-
-Based on the correlogram, the first order difference gives strong evidence of white noise. There are a few significant points outside of the confidence interval but we could expect 5% of the data to be outside of those lines and so these do not appear to be practically significant. This shows a lack of significant correlation as would be expected with white noise. 
+Based on the correlogram, the first order difference gives strong evidence of white noise. There are a few significant points outside of the confidence interval but we could expect 5% of the data to be outside of those lines and so these do not appear to be practically significant. This shows a lack of significant correlation as would be expected with white noise.
 :::
 
 ### Question 2 - Random Walks with drift and exponentially weighted slopes: Stocks (20 points)
@@ -192,7 +191,6 @@ t.test(stock_ts$diff, conf.level = 0.95)
 #### c) Based on the results, is there a justification to adding an exponentially weighted slope vs adding a drift parameter? Please explain.
 
 ::: {.callout-note title="Answer" icon="false"}
-
 The 95% confidence interval contains 0, and so it can not be concluded that there is evidence of a positive drift in the price of Sofi. Because the process seems random, adding an exponentially weighted slope isn’t a good idea—it would likely pick up short, term random changes instead of a consistent, predictable trend.
 :::
 
@@ -209,7 +207,7 @@ The 95% confidence interval contains 0, and so it can not be concluded that ther
 |  | **Mastery (5)** | **Incomplete (0)** |
 | **Question 1d: First Difference Properties** | Students create two charts as specified: a correlogram of the first-difference of daily closing stock prices and a histogram of the difference in stock prices with the corresponding normal density superimposed. The correlogram effectively examines the autocorrelation structure of the differenced series, providing insights into the stationarity and serial dependence of the data. The histogram and superimposed normal density accurately represent the distribution of the differences in stock prices, allowing for visual comparison between the empirical distribution and the theoretical normal distribution. | Students encounter difficulties in understanding the concept of differencing or density estimation, leading to inaccuracies in the visual representation of the data. Their analysis of the correlogram and histogram may lack depth or coherence, providing vague or incorrect interpretations of the autocorrelation structure or distribution of the differences in stock prices. Additionally, they may fail to effectively superimpose the normal density on the histogram or overlook key features or patterns in the visualizations. |
 |  | **Mastery (10)** | **Incomplete (0)** |
-| **Question 1e:  Model Identification** | Student interpret the autocorrelation patterns in the correlogram, focusing on the presence or absence of significant autocorrelation at lag 1 and higher lags. They interpret the shape and centering of the histogram, considering whether it resembles a normal distribution, discussing how the observed patterns align with the expectations for a random walk process. | Students provide incomplete or superficial interpretations of the autocorrelation patterns or histogram shape, failing to connect them to the characteristics of a random walk process. They overlook key features or patterns in the visualizations, indicating a limited understanding of the underlying concepts. |
+| **Question 1e: Model Identification** | Student interpret the autocorrelation patterns in the correlogram, focusing on the presence or absence of significant autocorrelation at lag 1 and higher lags. They interpret the shape and centering of the histogram, considering whether it resembles a normal distribution, discussing how the observed patterns align with the expectations for a random walk process. | Students provide incomplete or superficial interpretations of the autocorrelation patterns or histogram shape, failing to connect them to the characteristics of a random walk process. They overlook key features or patterns in the visualizations, indicating a limited understanding of the underlying concepts. |
 |  | **Mastery (0)** | **Incomplete (0)** |
 | **Question 2a: Summary Statistics** | Students accurately calculate the mean and standard deviation of the first-difference daily closing stock prices series, with well-commented code. | Submission have calculation errors or lack sufficient comments in the code, making it hard to follow. They might struggle to provide accurate values or clear explanations, indicating a need for improvement in both mathematical and coding skills. |
 |  | **Mastery (10)** | **Incomplete (0)** |

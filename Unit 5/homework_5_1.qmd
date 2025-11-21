@@ -7,6 +7,11 @@ format:
     toc: true
 ---
 
+::: {.callout-note title="Revision" icon="false"}
+I updated everything that was in the key but left everything that wasn't.
+
+:::
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
 # Loading R packages
