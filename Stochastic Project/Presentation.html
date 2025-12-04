@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="HW_Project_Presentation_files/libs/clipboard/clipboard.min.js"></script>
-<script src="HW_Project_Presentation_files/libs/quarto-html/tabby.min.js"></script>
-<script src="HW_Project_Presentation_files/libs/quarto-html/popper.min.js"></script>
-<script src="HW_Project_Presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="HW_Project_Presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="HW_Project_Presentation_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="HW_Project_Presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="HW_Project_Presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="Presentation_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Presentation_files/libs/quarto-html/tabby.min.js"></script>
+<script src="Presentation_files/libs/quarto-html/popper.min.js"></script>
+<script src="Presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="Presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Presentation_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="Presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="Presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content="Tristan Farrow">
@@ -15,8 +15,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="HW_Project_Presentation_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="HW_Project_Presentation_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="Presentation_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="Presentation_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -30,11 +30,11 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="HW_Project_Presentation_files/libs/revealjs/dist/theme/quarto.css">
-  <link href="HW_Project_Presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="HW_Project_Presentation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="HW_Project_Presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="HW_Project_Presentation_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="Presentation_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="Presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="Presentation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="Presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="Presentation_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -337,62 +337,143 @@ Tristan Farrow
 </div>
 
 </section>
-<section id="what-is-exponential-smoothing" class="slide level2">
-<h2>What is Exponential Smoothing?</h2>
-<p>Exponential Smoothing uses weighted averages to change how adaptive a model using smoothing parameters. This enables the model to be adapted to the context, use, or volatility of the data by weighing new data more heavily or relying more on historic trends.</p>
-</section>
-<section id="the-data-source" class="slide level2">
-<h2>The Data Source</h2>
-<p><a href="https://www.redfin.com/">Redfin</a> is an online real estate brokerage that helps people buy and sell residential properties. Through its online marketplace and access to Multiple Listing Services (MLS), Redfin compiles extensive housing data, which it shares publicly through its <a href="https://www.redfin.com/news/data-center/">Data Center</a>.</p>
-<p>The data set examined here tracks the number of home listings in the U.S. from March 2012 through July 2025. This represents the supply side of the housing market: the total number of homes available for purchase at any given time.</p>
-</section>
-<section id="the-data-set" class="slide level2">
-<h2>The Data Set</h2>
-
-<img data-src="HW_Project_Presentation_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="holt-winters-method" class="slide level2">
-<h2>Holt-Winters Method</h2>
-<p>Holt-Winters exponential smoothing is a sophisticated forecasting technique designed specifically for time series data that exhibits both trend and seasonal patterns.Holt-Winters maintains three separate components:</p>
-<div>
+<section id="introduction" class="slide level2 smaller">
+<h2>Introduction</h2>
+<p>Time series analysis relies on understanding the statistical properties of data over time, particularly whether a series contains predictable patterns or consists of pure randomness.</p>
+<p><strong>Key Concepts:</strong></p>
 <ul>
-<li class="fragment"><span class="math inline">\(\alpha\)</span> (alpha) for the level</li>
-<li class="fragment"><span class="math inline">\(\beta\)</span> (beta) for the trend</li>
-<li class="fragment"><span class="math inline">\(\gamma\)</span> (gamma) for the seasonal component</li>
+<li class="fragment">Discrete white noise: zero mean, constant variance, no autocorrelation</li>
+<li class="fragment">Serves as a benchmark for pattern removal</li>
+<li class="fragment">Real-world financial data rarely exhibits white noise properties</li>
+<li class="fragment">Transformations using differencing can convert non-stationary data</li>
 </ul>
-</div>
+<p><strong>This Analysis:</strong></p>
+<ul>
+<li class="fragment">Establish white noise principles using simulated data</li>
+<li class="fragment">Apply principles to SoFi stock price data</li>
+<li class="fragment">Demonstrate transformation to white noise process</li>
+</ul>
 </section>
-<section id="holt-winters-model" class="slide level2">
-<h2>Holt-Winters Model</h2>
-<div class="columns">
-<div class="column" style="width:75%;">
+<section id="important-concepts-stationary-data" class="slide level2">
+<h2>Important Concepts: Stationary Data</h2>
+<p><strong>What is Stationary Data?</strong></p>
+<p>A stationary time series maintains consistent statistical properties over time:</p>
+<ul>
+<li class="fragment">No trend or seasonal patterns</li>
+<li class="fragment">Constant mean</li>
+<li class="fragment">Stable variability</li>
+<li class="fragment">No recurring patterns.</li>
+</ul>
+</section>
+<section id="sofi-technologies-data" class="slide level2">
+<h2>SoFi Technologies Data</h2>
+<p><strong>Data Source:</strong> Historical daily opening prices from tidyquant R package</p>
+<p><strong>Date Range:</strong> January 1, 2023 - January 1, 2025</p>
+
+<img data-src="Presentation_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch"></section>
+<section id="company-profile-sofi" class="slide level2">
+<h2>Company Profile: SoFi</h2>
+<p><strong>SoFi (Social Finance, Inc.)</strong> - Financial technology company</p>
+<p><strong>Location:</strong> San Francisco, California</p>
+<p><strong>Services:</strong></p>
+<ul>
+<li class="fragment">Personal loans &amp; student loan refinancing</li>
+<li class="fragment">Mortgage lending</li>
+<li class="fragment">Online banking (checking/savings accounts)</li>
+<li class="fragment">Investment products (stocks, ETFs, cryptocurrency)</li>
+<li class="fragment">Robo-advisor services</li>
+</ul>
+</section>
+<section id="discrete-white-noise-definition" class="slide level2">
+<h2>Discrete White Noise: Definition</h2>
+<p><strong>Three Key Properties:</strong></p>
+<ol type="1">
+<li class="fragment"><strong>Mean of 0</strong>
+<ul>
+<li class="fragment">Data centered around zero</li>
+<li class="fragment">No upward or downward drift</li>
+</ul></li>
+<li class="fragment"><strong>Constant Variance</strong>
+<ul>
+<li class="fragment">Consistent level of randomness</li>
+</ul></li>
+<li class="fragment"><strong>No Autocorrelation</strong>
+<ul>
+<li class="fragment">Each observation independent</li>
+<li class="fragment">No predictable pattern</li>
+</ul></li>
+</ol>
+<p><strong>White noise = Pure randomness</strong></p>
+<p>White noise is the most extreme form of stationarity</p>
+</section>
+<section id="simulated-white-noise" class="slide level2">
+<h2>Simulated White Noise</h2>
+
+<img data-src="Presentation_files/figure-revealjs/unnamed-chunk-2-1.png" width="672" class="r-stretch"><p><strong>Observation:</strong> Variance remains consistent throughout the series</p>
+</section>
+<section id="simulated-data-mean-check" class="slide level2">
+<h2>Simulated Data: Mean Check</h2>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="HW_Project_Presentation_files/figure-revealjs/unnamed-chunk-3-1.png" width="960"></p>
-</figure>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Simulated Data Mean: -0.0604"</code></pre>
 </div>
 </div>
-</div>
-</div><div class="column" style="width:25%;">
-<p>Parameter Levels:</p>
-<p><span class="math inline">\(\alpha\)</span>: 0.3</p>
-<p><span class="math inline">\(\beta\)</span>: 0.001</p>
-<p><span class="math inline">\(\gamma\)</span>: 0.0001</p>
-</div></div>
+<p><strong>Result:</strong> Mean is approximately zero</p>
+<p>The mean is close enough to zero to satisfy the white noise assumption. Perfect zero is not expected in finite samples.</p>
 </section>
-<section id="evaluating-the-model" class="slide level2">
-<h2>Evaluating the Model</h2>
+<section id="simulated-data-autocorrelation" class="slide level2">
+<h2>Simulated Data: Autocorrelation</h2>
 
-<img data-src="HW_Project_Presentation_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><p>In the correlogram shown, nearly all bars fall within the blue confidence bands, indicating no statistically significant autocorrelation in the residuals. This is the desired outcome, as it suggests our Holt-Winters model has successfully captured the systematic patterns in the data.</p>
+<img data-src="Presentation_files/figure-revealjs/unnamed-chunk-4-1.png" width="672" class="r-stretch"></section>
+<section id="simulated-data-summary" class="slide level2">
+<h2>Simulated Data: Summary</h2>
+<p><strong>Three Properties Verified:</strong></p>
+<p>✓ <strong>Mean near zero:</strong> Confirmed at -0.0604</p>
+<p>✓ <strong>Constant variance:</strong> Visual inspection shows stable fluctuations</p>
+<p>✓ <strong>No autocorrelation:</strong> Correlogram shows no significant patterns</p>
+<p><strong>Conclusion:</strong></p>
+<p>This simulated example establishes a baseline for pure white noise. It demonstrates what we should expect when all three assumptions are satisfied, providing criteria for evaluating real-world time series data.</p>
 </section>
-<section id="forecast" class="slide level2">
-<h2>Forecast</h2>
+<section id="sofi-stock-data-original-prices" class="slide level2">
+<h2>SoFi Stock Data: Original Prices</h2>
 
-<img data-src="HW_Project_Presentation_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
+<img data-src="Presentation_files/figure-revealjs/unnamed-chunk-5-1.png" width="672" class="r-stretch"><p><strong>Finding:</strong> High autocorrelation across all lags</p>
+<p><strong>Conclusion:</strong> This series is NOT white noise</p>
+</section>
+<section id="transformation-first-order-differencing" class="slide level2">
+<h2>Transformation: First-Order Differencing</h2>
+<p><strong>First-order difference</strong> = change between consecutive observations</p>
+
+<img data-src="Presentation_files/figure-revealjs/unnamed-chunk-6-1.png" width="672" class="r-stretch"><p><strong>Variance Pattern:</strong> Much more consistent with white noise</p>
+<p>Note: Final 10% shows some deviation</p>
+</section>
+<section id="differenced-data-autocorrelation" class="slide level2">
+<h2>Differenced Data: Autocorrelation</h2>
+
+<img data-src="Presentation_files/figure-revealjs/unnamed-chunk-7-1.png" width="672" class="r-stretch"><p><strong>Result:</strong> Nearly all lags within confidence interval</p>
+<p><strong>Interpretation:</strong> No significant autocorrelation detected</p>
+</section>
+<section id="differenced-data-mean-check" class="slide level2">
+<h2>Differenced Data: Mean Check</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "First Order Open Price Difference: 0.0222"</code></pre>
+</div>
+</div>
+<p><strong>Result:</strong> Mean approximately zero</p>
+<p>The differenced series satisfies the white noise mean assumption.</p>
+</section>
 <section id="conclusion" class="slide level2">
 <h2>Conclusion</h2>
-<p>This analysis demonstrates the practical value of exponential smoothing methods like Holt-Winters for understanding complex time series data. Through careful decomposition and parameter selection, we can separate underlying trends from seasonal fluctuations and random noise, revealing insights that might otherwise remain hidden in the raw data. For housing market analysis specifically, this approach illuminates both the predictable rhythms of buyer and seller behavior and the longer-term structural shifts in inventory supply.</p>
+<p><strong>Key Finding:</strong></p>
+<p>Raw SoFi stock prices exhibit strong autocorrelation and fail white noise criteria. However, first-order differencing transforms the series into white noise.</p>
+<p><strong>Why This Matters:</strong></p>
+<ul>
+<li class="fragment">Differencing is fundamental in time series modeling</li>
+<li class="fragment">Removes trending behavior from non-stationary data</li>
+<li class="fragment">Exposes underlying random fluctuations</li>
+<li class="fragment">Creates stationary white noise suitable for modeling and forecasting</li>
+</ul>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
@@ -403,19 +484,19 @@ Tristan Farrow
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="HW_Project_Presentation_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="Presentation_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="HW_Project_Presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="HW_Project_Presentation_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="HW_Project_Presentation_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="HW_Project_Presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="HW_Project_Presentation_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="HW_Project_Presentation_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="HW_Project_Presentation_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="HW_Project_Presentation_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="HW_Project_Presentation_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="Presentation_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

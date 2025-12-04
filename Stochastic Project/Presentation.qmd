@@ -1,0 +1,224 @@
+---
+title:  "White Noise"
+author: "Tristan Farrow"
+format: 
+  revealjs:
+    theme: simple
+    slide-number: true
+    incremental: true
+---
+
+## Introduction {.smaller}
+
+Time series analysis relies on understanding the statistical properties of data over time, particularly whether a series contains predictable patterns or consists of pure randomness.
+
+**Key Concepts:**
+
+- Discrete white noise: zero mean, constant variance, no autocorrelation
+- Serves as a benchmark for pattern removal
+- Real-world financial data rarely exhibits white noise properties
+- Transformations using differencing can convert non-stationary data
+
+**This Analysis:**
+
+- Establish white noise principles using simulated data
+- Apply principles to SoFi stock price data
+- Demonstrate transformation to white noise process
+
+## Important Concepts: Stationary Data
+
+**What is Stationary Data?**
+
+A stationary time series maintains consistent statistical properties over time:
+
+- No trend or seasonal patterns
+- Constant mean
+- Stable variability
+- No recurring patterns.
+
+## SoFi Technologies Data
+
+**Data Source:** Historical daily opening prices from tidyquant R package
+
+**Date Range:** January 1, 2023 - January 1, 2025
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(nlme,tsibble, fable,feasts, tsibbledata,
+               fable.prophet, patchwork,lubridate, 
+               rio,ggplot2,kableExtra,tidyquant, 
+               dplyr , plotly,tidymodels, 
+               multilevelmod, broom.mixed, gt, pander, lmtest
+)
+
+ticker <- "SOFI"
+company <- "Sofi Technologies"
+start_date <- "2023-01-01"
+end_date <- "2025-01-01"
+
+stock_df <- tq_get(ticker, from = start_date, to = end_date, get = "stock.prices") |> 
+  mutate(diff = open - lag(open))
+
+stock_ts <- stock_df |> 
+  mutate(ymd = ymd(date)) |> 
+  dplyr::select(ymd, open, diff) |> 
+  as_tibble(index = ymd)
+
+ggplot(data = stock_df, aes(x = date, y = open)) +
+  geom_line() +
+  labs(title = "Sofi Stock Price", 
+       subtitle = "(Date Range: 01/01/2023 - 01/01/2025)",
+       x = "Date", y = "Price") +
+  scale_y_continuous(labels = scales::label_dollar()) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+```
+
+## Company Profile: SoFi
+
+**SoFi (Social Finance, Inc.)** - Financial technology company
+
+**Location:** San Francisco, California
+
+**Services:**
+
+- Personal loans & student loan refinancing
+- Mortgage lending
+- Online banking (checking/savings accounts)
+- Investment products (stocks, ETFs, cryptocurrency)
+- Robo-advisor services
+
+## Discrete White Noise: Definition
+
+**Three Key Properties:**
+
+1. **Mean of 0**
+   - Data centered around zero
+   - No upward or downward drift
+
+2. **Constant Variance**
+   - Consistent level of randomness
+
+3. **No Autocorrelation**
+   - Each observation independent
+   - No predictable pattern
+
+**White noise = Pure randomness**
+
+White noise is the most extreme form of stationarity
+
+## Simulated White Noise
+
+```{r, fig.height=4, fig.width=7}
+set.seed(42)
+n <- 750
+white_noise_sigma <- rnorm(1, 0, 1)
+
+wn_df <- data.frame(x = rnorm(n, 0, white_noise_sigma)) |> 
+  mutate(index = row_number())
+
+ggplot(data = wn_df, aes(x = index, y = x)) +
+  geom_line() +
+  labs(title = "Simulated Discrete White Noise",
+       x = "Index", y = "Value") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+**Observation:** Variance remains consistent throughout the series
+
+## Simulated Data: Mean Check
+
+```{r}
+sim_mean <- mean(wn_df$x)
+paste("Simulated Data Mean:", sim_mean |> round(4))
+```
+
+**Result:** Mean is approximately zero
+
+The mean is close enough to zero to satisfy the white noise assumption. Perfect zero is not expected in finite samples.
+
+## Simulated Data: Autocorrelation
+
+```{r, fig.height=4.5, fig.width=7}
+acf(wn_df$x, plot = TRUE, type = "correlation", 
+    main = "Simulated Data Correlogram")
+```
+
+## Simulated Data: Summary
+
+**Three Properties Verified:**
+
+✓ **Mean near zero:** Confirmed at `r round(sim_mean, 4)`
+
+✓ **Constant variance:** Visual inspection shows stable fluctuations
+
+✓ **No autocorrelation:** Correlogram shows no significant patterns
+
+**Conclusion:**
+
+This simulated example establishes a baseline for pure white noise. It demonstrates what we should expect when all three assumptions are satisfied, providing criteria for evaluating real-world time series data.
+
+## SoFi Stock Data: Original Prices
+
+```{r, message=FALSE, warning=FALSE, fig.height=4.5, fig.width=7}
+acf(stock_df$open, plot = TRUE, type = "correlation", 
+    main = "SoFi Opening Price Correlogram")
+```
+
+**Finding:** High autocorrelation across all lags
+
+**Conclusion:** This series is NOT white noise
+
+## Transformation: First-Order Differencing
+
+**First-order difference** = change between consecutive observations
+
+```{r, warning=FALSE, message=FALSE, fig.height=4, fig.width=7}
+ggplot(data = stock_df, aes(x = date, y = diff)) +
+  geom_line() +
+  labs(title = "SoFi Stock Price Open First Order Difference",
+       x = "Date", y = "Price") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+**Variance Pattern:** Much more consistent with white noise
+
+Note: Final 10% shows some deviation
+
+## Differenced Data: Autocorrelation
+
+```{r, message=FALSE, warning=FALSE, fig.height=4.5, fig.width=7}
+acf(stock_df$diff |> na.omit(), plot = TRUE, type = "correlation", 
+    main = "SoFi First Difference Correlogram")
+```
+
+**Result:** Nearly all lags within confidence interval
+
+**Interpretation:** No significant autocorrelation detected
+
+## Differenced Data: Mean Check
+
+```{r, message=FALSE, warning=FALSE}
+fst_diff_mean <- mean(stock_df$diff |> na.omit())
+paste("First Order Open Price Difference:", fst_diff_mean |> round(4))
+```
+
+**Result:** Mean approximately zero
+
+The differenced series satisfies the white noise mean assumption.
+
+## Conclusion
+
+**Key Finding:**
+
+Raw SoFi stock prices exhibit strong autocorrelation and fail white noise criteria. However, first-order differencing transforms the series into white noise.
+
+**Why This Matters:**
+
+- Differencing is fundamental in time series modeling
+- Removes trending behavior from non-stationary data
+- Exposes underlying random fluctuations
+- Creates stationary white noise suitable for modeling and forecasting
