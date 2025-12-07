@@ -1,5 +1,5 @@
 ---
-title: "Time Series Homework: Chapter 6 Lesson 1 Key"
+title: "Time Series Homework: Chapter 6 Lesson 2"
 subtitle: "Tristan Farrow"
 format: 
   html:
@@ -17,7 +17,7 @@ pacman::p_load(nlme,tsibble, fable,feasts, tsibbledata,
                rio,ggplot2,kableExtra,tidyquant, 
                dplyr , plotly,tidymodels, stats,
                multilevelmod, broom.mixed,
-               forecast
+               forecast, pander
 )
 ```
 
@@ -43,135 +43,145 @@ gdp_ts <- rio::import("https://byuistats.github.io/timeseries/data/gdp_fred.csv"
 We have worked with AR(p), MA(q), ARMA(p,q) stochastic processes. The theoretical ACF and PACF functions of each model can help us identify which of the three models would be a good fit for a particular time series. From the Time Series Notebook:
 
 ::: {.callout-note icon="false" title="ACF and PACF of an $AR(p)$ Process"}
-+--------------+------------------------+------------------------+--------------+
-|              | AR(p)                  | MA(q)                  | ARMA(p,q)    |
-+==============+========================+========================+==============+
-| ACF          | Tails off              | Cuts off after lag $q$ | Tails off    |
-+--------------+------------------------+------------------------+--------------+
-| PACF         | Cuts off after lag $p$ | Tails off              | Tails off    |
-+--------------+------------------------+------------------------+--------------+
+|      | AR(p)                  | MA(q)                  | ARMA(p,q) |
+|------|------------------------|------------------------|-----------|
+| ACF  | Tails off              | Cuts off after lag $q$ | Tails off |
+| PACF | Cuts off after lag $p$ | Tails off              | Tails off |
 :::
 
-The table above summarizes the theoretical functions. Each time series is a realization of the stochastic process, so our sample estimates of these functions might be different. The following questions will walk you through the simulation of each of them to illustrate this point.
+In the pprevious assignment, you worked with a simulation of a AR(3) process and a MA(3) process. In this assignment you will be comparing your findings from that assignment to an ARMA(3,3) process.
 
-#### AR(3) Simulation
+#### ARMA(3,3) Simulation
 
 ```{r}
 n <- 10000  # Number of observations
-p <- c(0.5, 0.3, 0.1)  # AR coefficients
+ar_coeffs <- c(0.5, 0.3, 0.1)   # AR coefficients
+ma_coeffs <- c(-0.7, -0.5, 0.2)  # MA coefficients
 
-# Simulate the AR(3) process
-set.seed(123)  # Setting seed for reproducibility
-ar3_process <- arima.sim(n = n, model = list(ar = p), sd = 1)
-ar3_df <- tibble(time = 1:n, value = ar3_process)# Convert the df to a tibble
-ar_3 <- as_tsibble(ar3_df, index = time) # Convert the tibble to a tsibble
-```
-
-#### MA(3) Simulation
-
-```{r}
-n <- 10000  # Number of observations
-q <- c(-0.7, -0.5, 0.2)  # MA coefficients
-
-# Simulate the MA(3) process
-set.seed(42)  # For reproducibility
-ma3_process <- arima.sim(n = n, model = list(ma = q), sd = 1)
-ma_3 <- as_tsibble(tibble(Time = 1:n, value = ma3_process), index = Time) # Convert the simulated MA(3) process to a tsibble
-
-```
-
-##### a) Plot the ACFs for the AR(3) and MA(3) simulations side by side.
-
-::: {.callout-note title="Answer" icon="false"}
-```{r}
-
-acf_plot_ar3 <- acf(ar_3, main = "ACF of AR(3) Process")
-
-acf_plot_ma3 <- acf(ma_3, main = "ACF of MA(3) Process")
-
-```
-:::
-
-##### b) Plot the PACFs for the AR(3) and MA(3) simulations side by side.
-
-::: {.callout-note title="Answer" icon="false"}
-```{r}
-
-pacf_plot_ar3 <- pacf(ar_3, main = "PACF of AR(3) Process")
-
-pacf_plot_m3 <- pacf(ma_3, main = "PACF of MA(3) Process")
-
-```
-:::
-
-##### c) Does the theoretical ACF and PACF functions described above in Table 1 match with the plots you created? Please change the seed for the simulation multiple times before answering this question.
-
-::: {.callout-note title="Answer" icon="false"}
-Yes both the ACF and PACF appear to trail off no matter the selected seed.
-:::
-
-### Question 2 - Experimentation
-
-#### a) Go back to the simulation and change the parameters used in the AR process. Show that your new parameters are stationary.
-
-```{r}
-n <- 10000  
-p <- c(0.6, -0.2, 0.2)  #  AR coefficients - HERE
-
-# Simulate the AR(3) process
-set.seed(42)  # Setting seed for reproducibility
-ar3_process2 <- arima.sim(n = n, model = list(ar = p), sd = 1)
-ar3_df <- tibble(time = 1:n, value = ar3_process)# Convert the df to a tibble
-ar_3 <- as_tsibble(ar3_df, index = time) # Convert the tibble to a tsibble
-```
-
-#### b.) Go back to the simulation and change the parameters used in the MA process. Show that the new parameters are invertible.
-
-```{r}
-n <- 10000  # Number of observations
-q <- c(0.4, 0.3, 0.2)  # MA coefficients - HERE
-
-# Simulate the MA(3) process
-set.seed(42)  # For reproducibility
-ma3_process2 <- arima.sim(n = n, model = list(ma = q), sd = 1)
-ma_3 <- as_tsibble(tibble(Time = 1:n, value = ma3_process), index = Time) # Convert the simulated MA(3) process to a tsibble
-
-```
-
-#### c.) Plot the acf and pacf of the new simulations. Are the charts still consistent with the table above?
-
-```{r}
-#| warning: false
-
-new_acf_plot_ar3 <- acf(ar_3, main = "ACF of AR(3) Process")
-
-new_acf_plot_ma3 <- acf(ma_3, main = "ACF of MA(3) Process")
-
-new_pacf_plot_ar3 <- pacf(ar_3, main = "PACF of AR(3) Process")
-
-new_pacf_plot_ma3 <- pacf(ma_3, main = "PACF of MA(3) Process")
-
-```
-
-::: {.callout-note title="Answer" icon="false"}
-Yes the charts are still consistent with the table above.
-:::
-
-#### d.) Pick parameters for the MA process that would make the ACF and PACF charts difficult to interept according to the table. Why do you think those parameter values are problematic?
-
-```{r}
-n <- 10000  # Number of observations
-q <- c(-0.05, 0.03, -0.02)  # MA coefficients - HERE
-
-# Simulate the MA(3) process
+# Simulate the ARMA(3, 3) process
 set.seed(123)  # For reproducibility
-ma3_process <- arima.sim(n = n, model = list(ma = q), sd = 1)
-ma_3 <- as_tsibble(tibble(Time = 1:n, value = ma3_process), index = Time) # Convert the simulated MA(3) process to a tsibble
+arma33_process <- arima.sim(n = n, model = list(ar = ar_coeffs, ma = ma_coeffs), sd = 1)
+
+# Convert the simulated ARMA(3, 3) process to a tsibble
+arma_33 <- as_tsibble(tibble(Time = 1:n, value = arma33_process), index = Time)
+```
+
+##### a) Plot the ACFs for the ARMA(3) simulation.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+acf(arma_33, main = "ACF for a ARMA(3) Process")
+```
+:::
+
+##### b) Plot the PACFs for the ARMA(3) simulation.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+pacf(arma_33, main = "PACF for a ARMA(3) Process")
+```
+:::
+
+### Question 2 - ARMA(p,q): GDP Business Cycles (50 points)
+
+Business cycles are the fluctuations in economic activity that an economy experiences over time, marked by phases of expansion, peak, contraction (or recession), and trough. During expansion, economic indicators such as GDP rise, reaching a peak where the economy operates at maximum capacity. Following the peak, the economy contracts, leading to a recession characterized by falling GDP, until it hits a trough, the lowest point, signaling the end of contraction and the start of recovery. The yearly percentage change in real GDP effectively captures the fluctuations of business cycles by quantifying the rate at which an economy's total output of goods and services grows or shrinks from one year to the next. The yearly percentage change in real US GDP in decimals is the `year_over_year` variable in the `gdp_ts` tsibble.
+
+##### a) Plot the yearly percentage change in US Real GDP
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+ggplot(gdp_ts, aes(x = quarter, y = year_over_year)) +
+  geom_line() +
+  labs(
+    title = "Yearly Percentage Change in US Real GDP",
+    x = "Date",
+    y = "Percent Change"
+  ) +
+  scale_y_continuous(
+    labels = scales::label_percent()
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+:::
+
+##### b) Plot the ACF and PACF of the series
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+acf(gdp_ts$year_over_year, main = "ACF of Yearly Percent Change in US Real GDP")
+
+pacf(gdp_ts$year_over_year, main = "PACF of Yearly Percent Change in US Real GDP")
+
+```
+:::
+
+##### c) Based on the ACF and PACF, please speculate which stationary model will best fit the data.
+
+::: {.callout-note title="Answer" icon="false"}
+Based on the ACF and PACF plots, a moving average model of order 4 (MA(4)) is appropriate. The ACF shows significant autocorrelation up to lag 4, after which it cuts off. The PACF exhibits a pattern where every 4th lag appears significant, which is consistent with an MA(4) process.
+:::
+
+##### d) Please fit an AR(p) model to the yearly percentage change in US Real GDP.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+gdp_ar <- gdp_ts %>% 
+  model(ar = ARIMA(year_over_year ~ 1 + pdq(4, 0, 0) + PDQ(0, 0, 0)))
+
+tidy(gdp_ar)
+
+```
+:::
+
+##### e) Please fit an MA(q) model to the yearly percentage change in US Real GDP.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+gdp_ma <- gdp_ts %>% 
+  model(ma = ARIMA(year_over_year ~ 1 + pdq(0, 0, 4) + PDQ(0, 0, 0)))
+
+tidy(gdp_ma)
+```
+:::
+
+##### f) Please fit an ARMA(p,q) model to the yearly percentage change in US Real GDP.
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+gdp_arma <- gdp_ts |>
+  model(ma = ARIMA(year_over_year ~ 1 + pdq(0,0,4) + PDQ(0, 0, 0)))
+
+tidy(gdp_arma)
+```
+:::
+
+##### g) In a table, please compare the fit of each model. Which do you think is the best model for the series?
+
+::: {.callout-note title="Answer" icon="false"}
+```{r}
+
+all_models <- gdp_ts |>
+  model(
+    ar = ARIMA(year_over_year ~ 1 + pdq(4,0,0) + PDQ(0, 0, 0)),
+    ma = ARIMA(year_over_year ~ 1 + pdq(0,0,4) + PDQ(0, 0, 0)),
+    arma = ARIMA(year_over_year ~ 1 + pdq(4,0,4) + PDQ(0, 0, 0))
+  )
+
+glance(all_models)
 
 ```
 
-::: {.callout-note title="Answer" icon="false"}
-The ACF values are very small making it difficult because they will be close to the confidence interval.
+Based on the information criteria, the **ARMA model is the best choice** for this series. It has the lowest AIC (-776.54), AICc (-774.78), and ties with MA on BIC (-757.62), while also achieving the smallest residual variance (σ² = 0.000161) and highest log-likelihood (398.27). The ARMA model provides the best balance between fit and parsimony, outperforming both the AR and MA specifications.
 :::
 
 ### Rubric
